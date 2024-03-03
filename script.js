@@ -1,45 +1,69 @@
-// Initialize the map
-var map = L.map('map').setView([20, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-}).addTo(map);
+// Assuming you have the data from the dataframe in the following format:
+// [{"country": "Brazil", "total_goals": 227}, {...}]
+d3.json('path/to/total_world_cup_goals_by_country.json').then(data => {
+  // Sort data by total goals
+  data.sort((a, b) => d3.descending(a.total_goals, b.total_goals));
 
-// Function to get color based on total goals
-function getColor(goals) {
-    return goals > 100 ? '#800026' :
-           goals > 50  ? '#BD0026' :
-           goals > 20  ? '#E31A1C' :
-           goals > 10  ? '#FC4E2A' :
-           goals > 5   ? '#FD8D3C' :
-           goals > 0   ? '#FEB24C' :
-                         '#FFEDA0';
-}
+  // Set dimensions and margins for the graph
+  const margin = {top: 20, right: 20, bottom: 30, left: 40},
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
 
-// Assuming 'total_world_cup_goals_by_country.json' is the correct path
-fetch('total_world_cup_goals_by_country.json')
-    .then(response => response.json())
-    .then(goalsData => {
-        // Now that goalsData is loaded, load the GeoJSON and integrate
-        fetch("countries.geojson")
-            .then(response => response.json())
-            .then(geoJsonData => {
-                L.geoJson(geoJsonData, {
-                    style: function(feature) {
-                        var country = feature.properties.name;
-                        var totalGoals = 0;
-                        var countryData = goalsData.find(d => d.country === country);
-                        if (countryData) {
-                            totalGoals = countryData.total_goals;
-                        }
-                        return {
-                            fillColor: getColor(totalGoals),
-                            weight: 2,
-                            opacity: 1,
-                            color: 'white',
-                            fillOpacity: 0.7
-                        };
-                    }
-                }).addTo(map);
-            });
-    })
-    .catch(error => console.error('Error loading the data:', error));
+  // Set the ranges for x and y axes
+  const x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1);
+  const y = d3.scaleLinear()
+        .range([height, 0]);
+
+  const svg = d3.select("#bar-chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", 
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  // Scale the range of the data in the domains
+  x.domain(data.map(d => d.country));
+  y.domain([0, d3.max(data, d => d.total_goals)]);
+
+  // Append the rectangles for the bar chart
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.country))
+      .attr("width", x.bandwidth())
+      .attr("y", d => y(d.total_goals))
+      .attr("height", d => height - y(d.total_goals));
+
+  // Add the x Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-65)");
+
+  // Add the y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y));
+
+  // Add axis labels
+  svg.append("text")
+      .attr("class", "axis-label")
+      .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+      .style("text-anchor", "middle")
+      .text("Country");
+
+  svg.append("text")
+      .attr("class", "axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Total Goals"); 
+});

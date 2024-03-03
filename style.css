@@ -1,4 +1,18 @@
-#map {
+#bar-chart {
+    width: 80%;
     height: 600px;
-    width: 100%;
+    margin: auto;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: orange;
+}
+
+.axis-label {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
 }
