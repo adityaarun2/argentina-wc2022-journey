@@ -1,6 +1,6 @@
 // Assuming you have the data from the dataframe in the following format:
 // [{"country": "Brazil", "total_goals": 227}, {...}]
-d3.json('path/to/total_world_cup_goals_by_country.json').then(data => {
+d3.json('total_world_cup_goals_by_country.json').then(data => {
   // Sort data by total goals
   data.sort((a, b) => d3.descending(a.total_goals, b.total_goals));
 
