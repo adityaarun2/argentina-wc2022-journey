@@ -1,5 +1,5 @@
 // Set the dimensions and margins of the graph
-const margin = { top: 20, right: 20, bottom: 70, left: 100 },
+const margin = { top: 30, right: 30, bottom: 40, left: 150 },
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
@@ -11,11 +11,6 @@ const svg = d3.select("#bar-chart")
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
-
-// Create a tooltip
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
 
 // Parse the Data
 d3.json('total_world_cup_goals_by_country.json').then(function(data) {
@@ -31,16 +26,14 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
     .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em")
-      .attr("transform", "rotate(-90)");
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
   // Y axis
   const y = d3.scaleBand()
     .range([0, height])
     .domain(data.map(function(d) { return d.country; }))
-    .padding(0.1);
+    .padding(0.2); // Increase padding for thicker bars
   svg.append("g")
     .call(d3.axisLeft(y));
 
@@ -49,22 +42,10 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
     .data(data)
     .enter().append("rect")
     .attr("class", "bar")
-    .attr("x", x(0) )
+    .attr("x", 0)
     .attr("y", function(d) { return y(d.country); })
     .attr("width", function(d) { return x(d.total_goals); })
-    .attr("height", y.bandwidth())
-    .attr("fill", "#69b3a2")
-    .on("mouseover", function(event, d) {
-      tooltip.transition()
-        .duration(200)
-        .style("opacity", .9);
-      tooltip.html(d.country + "<br/>" + "Goals: " + d.total_goals)
-        .style("left", (event.pageX) + "px")
-        .style("top", (event.pageY - 28) + "px");
-    })
-    .on("mouseout", function(d) {
-      tooltip.transition()
-        .duration(500)
-        .style("opacity", 0);
-    });
+    .attr("height", y.bandwidth()) // This determines the bar thickness
+    .attr("fill", "#69b3a2");
+
 });
