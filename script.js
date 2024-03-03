@@ -18,7 +18,7 @@ var tooltip = d3.select("body").append("div")
     .style("opacity", 0);
 
 // Parse the Data
-d3.json('path/to/your/data/total_world_cup_goals_by_country.json').then(function(data) {
+d3.json('total_world_cup_goals_by_country.json').then(function(data) {
 
   // Sort the data by total goals
   data.sort(function(a, b) { return d3.descending(a.total_goals, b.total_goals); });
