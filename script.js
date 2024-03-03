@@ -1,43 +1,41 @@
-// Assuming you have the data from the dataframe in the following format:
-// [{"country": "Brazil", "total_goals": 227}, {...}]
-d3.json('total_world_cup_goals_by_country.json').then(data => {
-  // Sort data by total goals
-  data.sort((a, b) => d3.descending(a.total_goals, b.total_goals));
+// Load the data from the JSON file
+d3.json('total_world_cup_goals_by_country.json', function(data) {
+  // Sort the data by total goals
+  data.sort(function(a, b) { return d3.descending(a.total_goals, b.total_goals); });
 
-  // Set dimensions and margins for the graph
-  const margin = {top: 20, right: 20, bottom: 30, left: 40},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+  // Set the dimensions of the canvas / graph
+  var margin = {top: 20, right: 20, bottom: 70, left: 40},
+      width = 600 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
 
-  // Set the ranges for x and y axes
-  const x = d3.scaleBand()
-        .range([0, width])
-        .padding(0.1);
-  const y = d3.scaleLinear()
-        .range([height, 0]);
+  // Set the ranges for the x and y scales
+  var x = d3.scaleBand().rangeRound([0, width]).padding(0.05),
+      y = d3.scaleLinear().range([height, 0]);
 
-  const svg = d3.select("#bar-chart").append("svg")
+  // Define the SVG element
+  var svg = d3.select("#bar-chart")
+      .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-    .append("g")
+      .append("g")
       .attr("transform", 
             "translate(" + margin.left + "," + margin.top + ")");
 
   // Scale the range of the data in the domains
-  x.domain(data.map(d => d.country));
-  y.domain([0, d3.max(data, d => d.total_goals)]);
+  x.domain(data.map(function(d) { return d.country; }));
+  y.domain([0, d3.max(data, function(d) { return d.total_goals; })]);
 
-  // Append the rectangles for the bar chart
-  svg.selectAll(".bar")
+  // Create the bars for the bar chart
+  svg.selectAll("bar")
       .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", d => x(d.country))
+      .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function(d) { return x(d.country); })
       .attr("width", x.bandwidth())
-      .attr("y", d => y(d.total_goals))
-      .attr("height", d => height - y(d.total_goals));
+      .attr("y", function(d) { return y(d.total_goals); })
+      .attr("height", function(d) { return height - y(d.total_goals); });
 
-  // Add the x Axis
+  // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
@@ -45,25 +43,9 @@ d3.json('total_world_cup_goals_by_country.json').then(data => {
       .style("text-anchor", "end")
       .attr("dx", "-.8em")
       .attr("dy", ".15em")
-      .attr("transform", "rotate(-65)");
+      .attr("transform", "rotate(-90)");
 
-  // Add the y Axis
+  // Add the Y Axis
   svg.append("g")
       .call(d3.axisLeft(y));
-
-  // Add axis labels
-  svg.append("text")
-      .attr("class", "axis-label")
-      .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
-      .style("text-anchor", "middle")
-      .text("Country");
-
-  svg.append("text")
-      .attr("class", "axis-label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left)
-      .attr("x",0 - (height / 2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("Total Goals"); 
 });
