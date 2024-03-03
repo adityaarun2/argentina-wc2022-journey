@@ -1,51 +1,52 @@
-// Load the data from the JSON file
-d3.json('total_world_cup_goals_by_country.json', function(data) {
-  // Sort the data by total goals
-  data.sort(function(a, b) { return d3.descending(a.total_goals, b.total_goals); });
+// This JavaScript code assumes you have a JSON file "total_world_cup_goals_by_country.json"
+// that contains an array of objects with "country" and "total_goals" properties.
 
-  // Set the dimensions of the canvas / graph
-  var margin = {top: 20, right: 20, bottom: 70, left: 40},
-      width = 600 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+// Set the dimensions and margins of the graph
+const margin = { top: 20, right: 30, bottom: 40, left: 90 },
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
 
-  // Set the ranges for the x and y scales
-  var x = d3.scaleBand().rangeRound([0, width]).padding(0.05),
-      y = d3.scaleLinear().range([height, 0]);
+// Append the svg object to the div called 'bar-chart'
+const svg = d3.select("#bar-chart")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Define the SVG element
-  var svg = d3.select("#bar-chart")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", 
-            "translate(" + margin.left + "," + margin.top + ")");
+// Parse the Data
+d3.json("total_world_cup_goals_by_country.json").then( data => {
+  // Sort data
+  data.sort((a, b) => d3.descending(a.total_goals, b.total_goals));
 
-  // Scale the range of the data in the domains
-  x.domain(data.map(function(d) { return d.country; }));
-  y.domain([0, d3.max(data, function(d) { return d.total_goals; })]);
-
-  // Create the bars for the bar chart
-  svg.selectAll("bar")
-      .data(data)
-      .enter().append("rect")
-      .style("fill", "steelblue")
-      .attr("x", function(d) { return x(d.country); })
-      .attr("width", x.bandwidth())
-      .attr("y", function(d) { return y(d.total_goals); })
-      .attr("height", function(d) { return height - y(d.total_goals); });
-
-  // Add the X Axis
+  // X axis
+  const x = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.total_goals)])
+    .range([0, width]);
   svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em")
-      .attr("transform", "rotate(-90)");
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
-  // Add the Y Axis
+  // Y axis
+  const y = d3.scaleBand()
+    .range([0, height])
+    .domain(data.map(d => d.country))
+    .padding(.1);
   svg.append("g")
-      .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+
+  // Bars
+  svg.selectAll("myRect")
+    .data(data)
+    .join("rect")
+    .attr("x", x(0))
+    .attr("y", d => y(d.country))
+    .attr("width", d => x(d.total_goals))
+    .attr("height", y.bandwidth())
+    .attr("fill", "#69b3a2")
+    .on("mouseover", function() { d3.select(this).attr("fill", "#6b486b"); })
+    .on("mouseout", function() { d3.select(this).attr("fill", "#69b3a2"); });
 });
