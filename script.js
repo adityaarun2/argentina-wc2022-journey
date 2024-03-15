@@ -66,7 +66,7 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
 
 // xG chart code
 // Set the dimensions and margins of the graph for the xG chart
-const xgMargin = { top: 20, right: 20, bottom: 30, left: 60 },
+const xgMargin = { top: 20, right: 30, bottom: 60, left: 60 },
       xgWidth = 960 - xgMargin.left - xgMargin.right,
       xgHeight = 500 - xgMargin.top - xgMargin.bottom;
 
@@ -143,4 +143,67 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
   // Add the Y Axis for the xG chart
   xgSvg.append("g")
     .call(d3.axisLeft(yScale));
+
+      // Draw circles for goals and add tooltips
+  xgSvg.selectAll(".goal-dot")
+  .data(data.filter(d => d.Outcome === "Goal"))
+  .enter().append("circle")
+    .attr("class", "goal-dot")
+    .attr("cx", d => xScale(d.Minute))
+    .attr("cy", d => yScale(d.xG))
+    .attr("r", 5)
+    .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
+    .on("mouseover", (event, d) => {
+      xgTooltip.transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      xgTooltip.html(`Player: ${d.Player}<br/>xG: ${d.xG.toFixed(2)}`)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", (d) => {
+      xgTooltip.transition()
+        .duration(500)
+        .style("opacity", 0);
+    });
+
+// Add the X Axis with a title
+xgSvg.append("g")
+  .attr("transform", `translate(0,${xgHeight})`)
+  .call(d3.axisBottom(xScale).ticks(18))
+  .append("text")
+  .attr("class", "axis-title")
+  .attr("y", 40)
+  .attr("x", xgWidth / 2)
+  .style("text-anchor", "middle")
+  .text("Minutes");
+
+// Add the Y Axis with a title
+xgSvg.append("g")
+  .call(d3.axisLeft(yScale))
+  .append("text")
+  .attr("class", "axis-title")
+  .attr("transform", "rotate(-90)")
+  .attr("y", -50)
+  .attr("x", -xgHeight / 2)
+  .attr("dy", "1em")
+  .style("text-anchor", "middle")
+  .text("Cumulative xG");
+
+// Add chart title
+xgSvg.append("text")
+  .attr("x", (xgWidth / 2))
+  .attr("y", -10)
+  .attr("text-anchor", "middle")
+  .style("font-size", "20px")
+  .style("text-decoration", "underline")
+  .text("Argentina 1 - 2 Saudi Arabia");
+
+// If you want the x-axis to go until the maximum minute where a shot was recorded,
+// find the max minute from your data and set the domain of xScale accordingly.
+// Example:
+const maxMinute = d3.max(data, d => d.Minute);
+xScale.domain([0, maxMinute]);
+// Then redraw the x-axis:
+xgSvg.select(".x-axis").call(d3.axisBottom(xScale).ticks(maxMinute / 5)); // Adjust tick count as needed
 });
