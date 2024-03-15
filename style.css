@@ -4,7 +4,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Open Sans', sans-serif; /* Better readability */
+    font-family: 'Open Sans', sans-serif;
     background-position: center center;
     background-size: cover;
     background-attachment: fixed;
@@ -21,13 +21,13 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 50%; /* Adjust the height of the gradient as needed */
-    background: linear-gradient(180deg, transparent, rgba(0,0,0,1)); /* Creates the black fading effect */
+    height: 50%;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,1));
 }
 
 #main-header {
     position: absolute;
-    bottom: 20%; /* Position the header towards the bottom of the image */
+    bottom: 20%;
     left: 50%;
     transform: translate(-50%, 0);
     color: white;
@@ -35,8 +35,7 @@ body {
     padding: 20px;
     font-family: 'Roboto', sans-serif;
     font-size: 1.3em;
-    width: 80%; /* Ensures text doesn't spread too wide */
-    background: none; /* Remove the previous background */
+    width: 80%;
 }
 
 #content {
@@ -47,21 +46,22 @@ body {
     margin-top: 20px;
 }
 
-#intro-text {
+#intro-text, #context-text {
     margin: 1px;
     text-align: left;
     max-width: 800px;
 }
 
-#context-text {
-  margin: 1px;
-  text-align: left;
-  max-width: 800px;
+/* Styles for the cumulative xG chart container */
+#xg-chart-container {
+    margin: 20px auto;
+    width: 90%;
+    text-align: center;
 }
 
-
-#bar-chart {
-    margin: 20px;
+#xg-chart {
+    width: 960px; /* Set to match the width in your JS */
+    height: 500px; /* Set to match the height in your JS */
 }
 
 .tooltip {
@@ -76,3 +76,5 @@ body {
     opacity: 0;
     transition: opacity 0.3s;
 }
+
+/* Additional styles for tooltips, lines, and other chart elements will be defined in script.js */
