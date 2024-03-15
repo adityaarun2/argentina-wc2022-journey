@@ -1,35 +1,28 @@
-// Assuming the CSV file is correctly formatted and available at the given path
-
 // Set the dimensions and margins of the graph
-const margin = { top: 30, right: 30, bottom: 70, left: 60 },
-      width = 460 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
+const margin = { top: 20, right: 30, bottom: 40, left: 50 },
+      width = 1170 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
 
-// Append the svg object to the div called 'xg-chart'
+// Append the svg object to the body of the page
 const svg = d3.select("#xg-chart")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// Create a tooltip
-const tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+//Read the data
+d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
 
-// Read the data
-d3.csv('Argentina Shot Data - Saudi Arabia.csv').then(function(data) {
-
-  // Group the data: I want to draw one line per group
+  // group the data: one array for each value of the X axis.
   const sumstat = d3.group(data, d => d.Squad);
 
-  // Add X axis --> it is a date format
+  // Add X axis
   const x = d3.scaleLinear()
-    .domain([0, 90])
+    .domain(d3.extent(data, function(d) { return d.Minute; }))
     .range([ 0, width ]);
   svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x));
 
   // Add Y axis
@@ -42,7 +35,7 @@ d3.csv('Argentina Shot Data - Saudi Arabia.csv').then(function(data) {
   // color palette
   const color = d3.scaleOrdinal()
     .domain(["Argentina", "Saudi Arabia"])
-    .range(['#377eb8','#4daf4a'])
+    .range(['#e41a1c','#377eb8'])
 
   // Draw the line
   svg.selectAll(".line")
@@ -57,4 +50,5 @@ d3.csv('Argentina Shot Data - Saudi Arabia.csv').then(function(data) {
             .y(function(d) { return y(+d.xG); })
             (d[1])
         })
+
 });
