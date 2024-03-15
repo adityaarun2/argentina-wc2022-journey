@@ -1,0 +1,104 @@
+{
+  "Knockout stage": {
+    "Final": {
+        "date": "December 18, 2022",
+        "match": [{
+            "team1": "Argentina",
+            "team2": "France",
+            "score": "3–3",
+            "outcome": "Argentina won on penalty kicks following extra time"
+        }]
+    },
+    "Third-place match": {
+        "date": "December 17, 2022",
+        "match": [{
+            "team1": "Croatia",
+            "team2": "Morocco",
+            "score": "2–1",
+            "outcome": "Croatia won match in normal time"
+        }]
+    },
+    "Semi-finals": {
+        "dates": "December 13, 2022 to December 14, 2022",
+        "matches": [{
+            "team1": "Argentina",
+            "team2": "Croatia",
+            "score": "3–0",
+            "outcome": "Argentina won match in normal time and advance to Final"
+        }, {
+            "team1": "France",
+            "team2": "Morocco",
+            "score": "2–0",
+            "outcome": "France won match in normal time and advance to Final"
+        }]
+    },
+    "Quarter-finals": {
+        "dates": "December 9, 2022 to December 10, 2022",
+        "matches": [{
+            "team1": "Croatia",
+            "team2": "Brazil",
+            "score": "1–1",
+            "outcome": "Croatia won on penalty kicks following extra time and advance to Semi-finals"
+        }, {
+            "team1": "Argentina",
+            "team2": "Netherlands",
+            "score": "2–2",
+            "outcome": "Argentina won on penalty kicks following extra time and advance to Semi-finals"
+        }, {
+            "team1": "Morocco",
+            "team2": "Portugal",
+            "score": "1–0",
+            "outcome": "Morocco won match in normal time and advance to Semi-finals"
+        }, {
+            "team1": "France",
+            "team2": "England",
+            "score": "2–1",
+            "outcome": "France won match in normal time and advance to Semi-finals"
+        }]
+    },
+    "Round of 16": {
+        "dates": "December 3, 2022 to December 6, 2022",
+        "matches": [{
+            "team1": "Netherlands",
+            "team2": "United States",
+            "score": "3–1",
+            "outcome": "Netherlands won match in normal time and advance to Quarter-finals"
+        }, {
+            "team1": "Argentina",
+            "team2": "Australia",
+            "score": "2–1",
+            "outcome": "Argentina won match in normal time and advance to Quarter-finals"
+        }, {
+            "team1": "France",
+            "team2": "Poland",
+            "score": "3–1",
+            "outcome": "France won match in normal time and advance to Quarter-finals"
+        }, {
+            "team1": "England",
+            "team2": "Senegal",
+            "score": "3–0",
+            "outcome": "England won match in normal time and advance to Quarter-finals"
+        }, {
+            "team1": "Croatia",
+            "team2": "Japan",
+            "score": "1–1",
+            "outcome": "Croatia won on penalty kicks following extra time and advance to Quarter-finals"
+        }, {
+            "team1": "Brazil",
+            "team2": "Korea Republic",
+            "score": "4–1",
+            "outcome": "Brazil won match in normal time and advance to Quarter-finals"
+        }, {
+            "team1": "Morocco",
+            "team2": "Spain",
+            "score": "0–0",
+            "outcome": "Morocco won on penalty kicks following extra time and advance to Quarter-finals"
+        }, {
+            "team1": "Portugal",
+            "team2": "Switzerland",
+            "score": "6–1",
+            "outcome": "Portugal won match in normal time and advance to Quarter-finals"
+        }]
+    }
+  }
+}

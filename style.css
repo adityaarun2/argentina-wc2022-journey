@@ -1,16 +1,78 @@
-/* Add styles for the tooltip */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif; /* Better readability */
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+#image-container {
+    position: relative;
+    width: 100%;
+}
+
+#image-container:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%; /* Adjust the height of the gradient as needed */
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,1)); /* Creates the black fading effect */
+}
+
+#main-header {
+    position: absolute;
+    bottom: 20%; /* Position the header towards the bottom of the image */
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.3em;
+    width: 80%; /* Ensures text doesn't spread too wide */
+    background: none; /* Remove the previous background */
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#intro-text {
+    margin: 1px;
+    text-align: left;
+    max-width: 800px;
+}
+
+#context-text {
+  margin: 1px;
+  text-align: left;
+  max-width: 800px;
+}
+
+
+#bar-chart {
+    margin: 20px;
+}
+
 .tooltip {
     position: absolute;
     text-align: center;
     width: auto;
-    height: auto;
     padding: 4px;
-    font: 12px sans-serif;
+    font: 14px 'Roboto', sans-serif;
     background: lightsteelblue;
-    border: 0px;
     border-radius: 8px;
-    pointer-events: none; /* it won't interfere with mouse events */
+    pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s;
-  }
-  
+}

@@ -1,0 +1,31 @@
+Minute,Player,Squad,xG,Outcome
+5,Alexis Mac Allister,Argentina,0.02,Saved
+8,Rodrigo De Paul,Argentina,0.08,Off Target
+17,Ángel Di María,Argentina,0.11,Off Target
+23,Lionel Messi (pen),Argentina,0.79,Goal
+32,Alexis Mac Allister,Argentina,0.02,Off Target
+36,Ángel Di María,Argentina,0.38,Goal
+49,Rodrigo De Paul,Argentina,0.04,Saved
+59,Julián Álvarez,Argentina,0.07,Saved
+60,Lionel Messi,Argentina,0.12,Off Target
+68,Randal Kolo Muani,France,0.09,Off Target
+71,Kylian Mbappé,France,0.03,Off Target
+72,Enzo Fernández,Argentina,0.07,Saved
+80,Kylian Mbappé (pen),France,0.79,Goal
+81,Kylian Mbappé,France,0.12,Goal
+84,Enzo Fernández,Argentina,0.04,Blocked
+91,Kylian Mbappé,France,0.03,Blocked
+92,Adrien Rabiot,France,0.06,Saved
+92,Lionel Messi,Argentina,0.07,Saved
+93,Alexis Mac Allister,Argentina,0.03,Off Target
+100,Youssouf Fofana,France,0.02,Blocked
+105,Lautaro Martínez,Argentina,0.09,Blocked
+105,Gonzalo Montiel,Argentina,0.02,Blocked
+106,Lautaro Martínez,Argentina,0.11,Off Target
+107,Lionel Messi,Argentina,0.03,Saved
+108,Lautaro Martínez,Argentina,0.14,Saved
+108,Lionel Messi,Argentina,0.86,Goal
+116,Kylian Mbappé,France,0.04,Blocked
+118,Kylian Mbappé (pen),France,0.79,Goal
+123,Randal Kolo Muani,France,0.3,Saved
+123,Lautaro Martínez,Argentina,0.25,Off Target
