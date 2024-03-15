@@ -77,8 +77,8 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
     .style("font-weight", "bold")
     .text("Top 10 countries based on their total goals in the World Cup.");
 
-    // Set the dimensions and margins for the xG chart
-const xgMargin = { top: 20, right: 30, bottom: 30, left: 60 },
+    // Set the dimensions and margins of the graph
+const xgMargin = { top: 20, right: 30, bottom: 30, left: 40 },
 xgWidth = 960 - xgMargin.left - xgMargin.right,
 xgHeight = 500 - xgMargin.top - xgMargin.bottom;
 
@@ -90,89 +90,103 @@ const xgSvg = d3.select("#content")
 .append("g")
 .attr("transform", `translate(${xgMargin.left},${xgMargin.top})`);
 
-// Read the data from the CSV file
+// Initialize a tooltip
+const xgTooltip = d3.select("body").append("div")
+.attr("class", "tooltip")
+.style("opacity", 0);
+
+// Read the data from a CSV file
 d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
-// Format the data
+// Process the data
 data.forEach(function(d) {
 d.xG = +d.xG;
 d.Minute = +d.Minute;
 });
 
-// Sort data by minute to calculate cumulative xG correctly
-data.sort((a, b) => a.Minute - b.Minute);
+// Group data by Squad
+let groupedData = d3.group(data, d => d.Squad);
 
-// Calculate cumulative xG for both teams
-let cumulativeXG = { 'Argentina': 0, 'Saudi Arabia': 0 };
-data.forEach(d => {
-cumulativeXG[d.Squad] += d.xG;
-d.cumulativeXG = cumulativeXG[d.Squad];
+// Calculate cumulative xG for each Squad
+let cumulativeXGData = [];
+groupedData.forEach((d, key) => {
+let cumulativeXG = 0;
+d.forEach(item => {
+cumulativeXG += item.xG;
+cumulativeXGData.push({
+  Minute: item.Minute,
+  cumulativeXG: cumulativeXG,
+  Squad: key,
+  Player: item.Player,
+  Goal: item.Outcome === 'Goal'
+});
+});
 });
 
-// Split the data into two arrays for each team
-let argData = data.filter(d => d.Squad === "Argentina");
-let saudiData = data.filter(d => d.Squad === "Saudi Arabia");
+// Split the cumulative data by Squad
+let argentinaData = cumulativeXGData.filter(d => d.Squad === 'Argentina');
+let saudiData = cumulativeXGData.filter(d => d.Squad === 'Saudi Arabia');
 
-// Set the ranges
-const x = d3.scaleLinear().domain([0, 90]).range([0, xgWidth]);
-const y = d3.scaleLinear().domain([0, d3.max(data, d => d.cumulativeXG)]).range([xgHeight, 0]);
+// Create the scales
+const xScale = d3.scaleLinear()
+.domain([0, d3.max(data, d => d.Minute)])
+.range([0, xgWidth]);
 
-// Define the lines
-const argLine = d3.line()
-.x(d => x(d.Minute))
-.y(d => y(d.cumulativeXG));
+const yScale = d3.scaleLinear()
+.domain([0, d3.max(cumulativeXGData, d => d.cumulativeXG)])
+.range([xgHeight, 0]);
 
-const saudiLine = d3.line()
-.x(d => x(d.Minute))
-.y(d => y(d.cumulativeXG));
+// Create the line generators
+const line = d3.line()
+.x(d => xScale(d.Minute))
+.y(d => yScale(d.cumulativeXG))
+.curve(d3.curveStepAfter);
 
-// Add the paths
+// Draw the lines for each team
 xgSvg.append("path")
-.data([argData])
-.attr("class", "line")
-.style("stroke", "blue")
-.attr("d", argLine);
+.datum(argentinaData)
+.attr("fill", "none")
+.attr("stroke", "blue")
+.attr("stroke-width", 2)
+.attr("d", line);
 
 xgSvg.append("path")
-.data([saudiData])
-.attr("class", "line")
-.style("stroke", "green")
-.attr("d", saudiLine);
+.datum(saudiData)
+.attr("fill", "none")
+.attr("stroke", "green")
+.attr("stroke-width", 2)
+.attr("d", line);
 
-// Add points for goals and provide a tooltip for additional information
+// Add circles for goals
 xgSvg.selectAll(".dot")
-.data(data.filter(d => d.Outcome === "Goal"))
+.data(cumulativeXGData.filter(d => d.Goal))
 .enter().append("circle")
 .attr("class", "dot")
-.attr("cx", d => x(d.Minute))
-.attr("cy", d => y(d.cumulativeXG))
+.attr("cx", d => xScale(d.Minute))
+.attr("cy", d => yScale(d.cumulativeXG))
 .attr("r", 5)
-.attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
+.attr("fill", d => d.Squad === 'Argentina' ? "blue" : "green")
 .on("mouseover", (event, d) => {
-tooltip.html(`Player: ${d.Player}<br/>Minute: ${d.Minute}<br/>xG: ${d.xG}<br/>Cumulative xG: ${d.cumulativeXG}`)
-  .style("left", (event.pageX) + "px")
-  .style("top", (event.pageY - 28) + "px")
-  .transition()
-  .duration(200)
-  .style("opacity", .9);
+  xgTooltip.transition()
+    .duration(200)
+    .style("opacity", .9);
+  xgTooltip.html("Player: " + d.Player + "<br/>Minute: " + d.Minute + "<br/>xG: " + d.xG)
+    .style("left", (event.pageX) + "px")
+    .style("top", (event.pageY - 28) + "px");
 })
-.on("mouseout", d => {
-tooltip.transition()
-  .duration(500)
-  .style("opacity", 0);
+.on("mouseout", (d) => {
+  xgTooltip.transition()
+    .duration(500)
+    .style("opacity", 0);
 });
 
 // Add the X Axis
 xgSvg.append("g")
 .attr("transform", `translate(0,${xgHeight})`)
-.call(d3.axisBottom(x));
+.call(d3.axisBottom(xScale));
 
 // Add the Y Axis
 xgSvg.append("g")
-.call(d3.axisLeft(y));
-
-// Tooltip div for hover information
-const tooltip = d3.select("body").append("div")
-.attr("class", "tooltip")
-.style("opacity", 0);
+.call(d3.axisLeft(yScale));
 });
+
 });
