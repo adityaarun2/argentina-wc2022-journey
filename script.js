@@ -76,4 +76,93 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
     .style("font-size", "15px") 
     .style("font-weight", "bold")
     .text("Top 10 countries based on their total goals in the World Cup.");
+
+    // Set the dimensions and margins for the xG graph
+const xgMargin = { top: 20, right: 20, bottom: 70, left: 100 },
+xgWidth = 960 - xgMargin.left - xgMargin.right,
+xgHeight = 500 - xgMargin.top - xgMargin.bottom;
+
+// Append the svg object for the xG graph below the bar chart
+const xgSvg = d3.select("#content") // Select the content div or choose another div as per your HTML structure
+.append("svg")
+.attr("width", xgWidth + xgMargin.left + xgMargin.right)
+.attr("height", xgHeight + xgMargin.top + xgMargin.bottom)
+.append("g")
+.attr("transform", `translate(${xgMargin.left},${xgMargin.top})`);
+
+// Define the scales for the xG graph
+const xScale = d3.scaleLinear()
+.domain([0, 90]) // duration of the match
+.range([ 0, xgWidth ]);
+
+const yScale = d3.scaleLinear()
+.domain([0, 3]) // assuming maximum cumulative xG to be 3
+.range([ xgHeight, 0 ]);
+
+// Add X axis for the xG chart
+xgSvg.append("g")
+.attr("transform", `translate(0, ${xgHeight})`)
+.call(d3.axisBottom(xScale));
+
+// Add Y axis for the xG chart
+xgSvg.append("g")
+.call(d3.axisLeft(yScale));
+
+// Read the CSV file and process the data for cumulative xG
+d3.csv('Argentina Shot Data - Saudi Arabia.csv', function(d) {
+return { minute: +d.Minute, xG: +d.xG, team: d.Squad };
+}).then(function(data) {
+
+// Calculate the cumulative xG for each team
+let cumulativeXG = { 'Argentina': 0, 'Saudi Arabia': 0 };
+let processedData = data.map(d => {
+cumulativeXG[d.team] += d.xG;
+return { minute: d.minute, cumulativeXG: cumulativeXG[d.team], team: d.team };
+});
+
+// Filter the data by team
+let argentinaData = processedData.filter(d => d.team === 'Argentina');
+let saudiData = processedData.filter(d => d.team === 'Saudi Arabia');
+
+// Create the line generator function
+const lineGenerator = d3.line()
+.x(d => xScale(d.minute))
+.y(d => yScale(d.cumulativeXG))
+.curve(d3.curveStepAfter); // to create a step-like line
+
+// Draw the line for Argentina
+xgSvg.append("path")
+.datum(argentinaData)
+.attr("fill", "none")
+.attr("stroke", "blue")
+.attr("stroke-width", 1.5)
+.attr("d", lineGenerator);
+
+// Draw the line for Saudi Arabia
+xgSvg.append("path")
+.datum(saudiData)
+.attr("fill", "none")
+.attr("stroke", "green")
+.attr("stroke-width", 1.5)
+.attr("d", lineGenerator);
+
+// Add dots for goals
+xgSvg.selectAll(".dot")
+.data(data)
+.enter()
+.append("circle")
+.attr("cx", d => xScale(d.minute))
+.attr("cy", d => yScale(cumulativeXG[d.team]))
+.attr("r", 5)
+.attr("fill", d => d.Outcome === 'Goal' ? "red" : "grey")
+.on("mouseover", function(event, d) {
+tooltip.html(`Minute: ${d.minute}<br>xG: ${d.xG}<br>Team: ${d.team}`)
+  .style("opacity", 1)
+  .style("left", (event.pageX + 10) + "px")
+  .style("top", (event.pageY - 15) + "px");
+})
+.on("mouseout", function(d) {
+tooltip.style("opacity", 0);
+});
+});
 });
