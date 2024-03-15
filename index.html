@@ -2,15 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>World Cup Goals Visualization</title>
+    <title>World Cup xG Visualization</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
-    <div id="image-container">
-        <img src="penalties.jpeg" alt="Winners" style="width:100%; height:auto;">
-    </div>
-
     <div id="main-header">
         <h1>Argentina's Majestic World Cup 2022 Run in Qatar</h1>
     </div>
@@ -22,18 +17,26 @@
                 Heading into the 2022 World Cup, Argentina carried with them a rich tapestry of football history, colored by triumphs, near-misses, and the indelible legacy of past legends. With two World Cup titles to their name, won in 1978 and 1986, Argentina has long been a beacon of football excellence on the global stage. The shadow of Diego Maradona, one of football's greatest icons, has loomed large over the team, especially his legendary performance in Mexico's 1986 World Cup, which has been a source of inspiration and a high benchmark for subsequent Argentine squads.
             </p>
         </div>
-        <!-- Add new section for cumulative xG chart -->
-        <div id="xg-chart-container">
-            <h2>Cumulative xG Chart: Argentina vs. Saudi Arabia</h2>
-            <div id="xg-chart"></div> <!-- The chart will be appended here -->
+
+        <div id="bar-chart">
+            <!-- D3.js will append the bar chart here -->
         </div>
-        <div id="bar-chart"></div>
+
         <div id="context-text">
             <p>
                 Argentina has been known for its attacking football, with a total goal tally in World Cup competitions that reflects their aggressive style of play. Before the 2022 World Cup, the team had amassed a substantial number of goals across all their World Cup appearances. This visualization highlights Argentina's impressive history in World Cup football, showcasing the total goals scored by the top 10 countries in the tournament's history. Notably, Argentina stands out with an impressive tally of 152 goals, underscoring their status as one of the most prolific and enduring teams on the global stage.
+            </p>
+        </div>
+
+        <div id="xg-chart-container">
+            <h2>Cumulative xG Chart: Argentina vs. Saudi Arabia</h2>
+            <div id="xg-chart">
+                <!-- D3.js will append the cumulative xG chart here -->
+            </div>
         </div>
     </div>
 
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -10,32 +10,11 @@ body {
     background-attachment: fixed;
 }
 
-#image-container {
-    position: relative;
-    width: 100%;
-}
-
-#image-container:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, transparent, rgba(0,0,0,1));
-}
-
 #main-header {
-    position: absolute;
-    bottom: 20%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    color: white;
     text-align: center;
     padding: 20px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.3em;
-    width: 80%;
+    background-color: #333;
+    color: white;
 }
 
 #content {
@@ -46,35 +25,28 @@ body {
     margin-top: 20px;
 }
 
-#intro-text, #context-text {
-    margin: 1px;
-    text-align: left;
-    max-width: 800px;
-}
-
-/* Styles for the cumulative xG chart container */
 #xg-chart-container {
     margin: 20px auto;
     width: 90%;
-    text-align: center;
 }
 
 #xg-chart {
-    width: 960px; /* Set to match the width in your JS */
-    height: 500px; /* Set to match the height in your JS */
+    width: 100%;
+    max-width: 900px;
+    height: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .tooltip {
     position: absolute;
     text-align: center;
-    width: auto;
-    padding: 4px;
-    font: 14px 'Roboto', sans-serif;
-    background: lightsteelblue;
-    border-radius: 8px;
+    padding: 6px;
+    font-size: 12px;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 4px;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.3s;
 }
-
-/* Additional styles for tooltips, lines, and other chart elements will be defined in script.js */
