@@ -91,30 +91,18 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     d.Minute = +d.Minute;
   });
 
-  // Group data by Squad
-  let groupedData = d3.group(data, d => d.Squad);
+  // Initialize the starting points (minute 0) for both teams
+  let argentinaData = [{ Minute: 0, cumulativeXG: 0 }];
+  let saudiData = [{ Minute: 0, cumulativeXG: 0 }];
 
-  // Initialize arrays to hold the cumulative xG data
-  let argentinaData = [{ Minute: 0, xG: 0, Player: '', Outcome: '' }];
-  let saudiData = [{ Minute: 0, xG: 0, Player: '', Outcome: '' }];
-
-  // Function to calculate cumulative xG for each team
-  groupedData.forEach((values, key) => {
-    let cumulativeXG = 0;
-    values.forEach(d => {
-      cumulativeXG += d.xG;
-      (key === 'Argentina' ? argentinaData : saudiData).push({
-        Minute: d.Minute,
-        xG: cumulativeXG,
-        Player: d.Player,
-        Outcome: d.Outcome
-      });
-    });
+  // Process data for cumulative xG values for both teams
+  data.forEach(function(d) {
+    if(d.Squad === 'Argentina') {
+      argentinaData.push({ Minute: d.Minute, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
+    } else if(d.Squad === 'Saudi Arabia') {
+      saudiData.push({ Minute: d.Minute, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
+    }
   });
-
-  // Sort data by minute to ensure correct line plotting
-  argentinaData.sort((a, b) => a.Minute - b.Minute);
-  saudiData.sort((a, b) => a.Minute - b.Minute);
 
   // Define the scales for the xG chart
   const xScale = d3.scaleLinear()
@@ -122,16 +110,16 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .range([0, xgWidth]);
 
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max([...argentinaData, ...saudiData], d => d.xG)])
+    .domain([0, Math.max(d3.max(argentinaData, d => d.cumulativeXG), d3.max(saudiData, d => d.cumulativeXG))])
     .range([xgHeight, 0]);
 
   // Define the line generator for the xG chart
   const line = d3.line()
     .x(d => xScale(d.Minute))
-    .y(d => yScale(d.xG))
+    .y(d => yScale(d.cumulativeXG))
     .curve(d3.curveStepAfter);
 
-  // Draw the lines for each team
+  // Draw the lines for Argentina
   xgSvg.append("path")
     .datum(argentinaData)
     .attr("fill", "none")
@@ -139,35 +127,13 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .attr("stroke-width", 2)
     .attr("d", line);
 
+  // Draw the lines for Saudi Arabia
   xgSvg.append("path")
     .datum(saudiData)
     .attr("fill", "none")
     .attr("stroke", "green")
     .attr("stroke-width", 2)
     .attr("d", line);
-
-  // Add points for goals and show tooltip on hover
-  xgSvg.selectAll(".goal-dot")
-    .data(data.filter(d => d.Outcome === "Goal"))
-    .enter().append("circle")
-      .attr("class", "goal-dot")
-      .attr("cx", d => xScale(d.Minute))
-      .attr("cy", d => yScale(groupedData.get(d.Squad).filter(dd => dd.Minute <= d.Minute).reduce((acc, dd) => acc + dd.xG, 0)))
-      .attr("r", 5)
-      .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
-      .on("mouseover", (event, d) => {
-        xgTooltip.transition()
-          .duration(200)
-          .style("opacity", .9);
-        xgTooltip.html(`Player: ${d.Player}<br/>Minute: ${d.Minute}<br/>xG: ${d.xG}`)
-          .style("left", (event.pageX) + "px")
-          .style("top", (event.pageY - 28) + "px");
-      })
-      .on("mouseout", d => {
-        xgTooltip.transition()
-          .duration(500)
-          .style("opacity", 0);
-      });
 
   // Add the X Axis for the xG chart
   xgSvg.append("g")
