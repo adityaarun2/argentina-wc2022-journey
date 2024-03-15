@@ -66,7 +66,7 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
 
 // xG chart code
 // Set the dimensions and margins of the graph for the xG chart
-const xgMargin = { top: 20, right: 30, bottom: 60, left: 60 },
+const xgMargin = { top: 50, right: 30, bottom: 60, left: 60 },
       xgWidth = 960 - xgMargin.left - xgMargin.right,
       xgHeight = 500 - xgMargin.top - xgMargin.bottom;
 
@@ -85,32 +85,35 @@ const xgTooltip = d3.select("body").append("div")
 
 // Read the data from the CSV file
 d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
-  // Process the data
-  data.forEach(function(d) {
-    d.xG = +d.xG;
-    d.Minute = +d.Minute;
-  });
-
-  // Initialize the starting points (minute 0) for both teams
-  let argentinaData = [{ Minute: 0, cumulativeXG: 0 }];
-  let saudiData = [{ Minute: 0, cumulativeXG: 0 }];
+  // Convert strings to numbers and initialize starting point for both teams
+  let argentinaData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
+  let saudiData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
 
   // Process data for cumulative xG values for both teams
   data.forEach(function(d) {
+    d.xG = +d.xG;
+    d.Minute = +d.Minute;
     if(d.Squad === 'Argentina') {
-      argentinaData.push({ Minute: d.Minute, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
+      argentinaData.push({ ...d, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
     } else if(d.Squad === 'Saudi Arabia') {
-      saudiData.push({ Minute: d.Minute, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
+      saudiData.push({ ...d, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
     }
   });
 
+  // Sort data by minute to ensure correct line plotting
+  argentinaData.sort((a, b) => a.Minute - b.Minute);
+  saudiData.sort((a, b) => a.Minute - b.Minute);
+
   // Define the scales for the xG chart
   const xScale = d3.scaleLinear()
-    .domain([0, 90]) // typical duration of a football match in minutes
+    .domain([0, 90]) // extending to a typical football match duration
     .range([0, xgWidth]);
 
   const yScale = d3.scaleLinear()
-    .domain([0, Math.max(d3.max(argentinaData, d => d.cumulativeXG), d3.max(saudiData, d => d.cumulativeXG))])
+    .domain([0, Math.max(
+      d3.max(argentinaData, d => d.cumulativeXG), 
+      d3.max(saudiData, d => d.cumulativeXG)
+    )])
     .range([xgHeight, 0]);
 
   // Define the line generator for the xG chart
@@ -119,7 +122,16 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .y(d => yScale(d.cumulativeXG))
     .curve(d3.curveStepAfter);
 
-  // Draw the lines for Argentina
+  // Add chart title
+  xgSvg.append("text")
+    .attr("x", xgWidth / 2)
+    .attr("y", 0 - (xgMargin.top / 2))
+    .attr("text-anchor", "middle")
+    .style("font-size", "20px")
+    .style("text-decoration", "underline")
+    .text("Argentina 1 - 2 Saudi Arabia");
+
+  // Draw the lines for each team
   xgSvg.append("path")
     .datum(argentinaData)
     .attr("fill", "none")
@@ -127,7 +139,6 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .attr("stroke-width", 2)
     .attr("d", line);
 
-  // Draw the lines for Saudi Arabia
   xgSvg.append("path")
     .datum(saudiData)
     .attr("fill", "none")
@@ -135,75 +146,51 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .attr("stroke-width", 2)
     .attr("d", line);
 
-  // Add the X Axis for the xG chart
+  // Add circles for goals and tooltips on hover
+  xgSvg.selectAll(".goal-dot")
+    .data(data.filter(d => d.Outcome === "Goal"))
+    .enter().append("circle")
+      .attr("class", "goal-dot")
+      .attr("cx", d => xScale(d.Minute))
+      .attr("cy", d => yScale(d.Squad === 'Argentina' ? 
+                              argentinaData.find(dd => dd.Minute === d.Minute).cumulativeXG : 
+                              saudiData.find(dd => dd.Minute === d.Minute).cumulativeXG))
+      .attr("r", 5)
+      .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
+      .on("mouseover", (event, d) => {
+        xgTooltip.transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        xgTooltip.html(`Player: ${d.Player}<br/>xG: ${d.xG.toFixed(2)}`)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 28) + "px");
+      })
+      .on("mouseout", () => {
+        xgTooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+
+  // Add the X Axis with a title
   xgSvg.append("g")
     .attr("transform", `translate(0,${xgHeight})`)
-    .call(d3.axisBottom(xScale));
+    .call(d3.axisBottom(xScale).ticks(18))
+    .append("text")
+    .attr("class", "axis-label")
+    .attr("y", 40)
+    .attr("x", xgWidth / 2)
+    .style("text-anchor", "middle")
+    .text("Minutes");
 
-  // Add the Y Axis for the xG chart
+  // Add the Y Axis with a title
   xgSvg.append("g")
-    .call(d3.axisLeft(yScale));
-
-      // Draw circles for goals and add tooltips
-  xgSvg.selectAll(".goal-dot")
-  .data(data.filter(d => d.Outcome === "Goal"))
-  .enter().append("circle")
-    .attr("class", "goal-dot")
-    .attr("cx", d => xScale(d.Minute))
-    .attr("cy", d => yScale(d.xG))
-    .attr("r", 5)
-    .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
-    .on("mouseover", (event, d) => {
-      xgTooltip.transition()
-        .duration(200)
-        .style("opacity", 0.9);
-      xgTooltip.html(`Player: ${d.Player}<br/>xG: ${d.xG.toFixed(2)}`)
-        .style("left", (event.pageX + 10) + "px")
-        .style("top", (event.pageY - 28) + "px");
-    })
-    .on("mouseout", (d) => {
-      xgTooltip.transition()
-        .duration(500)
-        .style("opacity", 0);
-    });
-
-// Add the X Axis with a title
-xgSvg.append("g")
-  .attr("transform", `translate(0,${xgHeight})`)
-  .call(d3.axisBottom(xScale).ticks(18))
-  .append("text")
-  .attr("class", "axis-title")
-  .attr("y", 40)
-  .attr("x", xgWidth / 2)
-  .style("text-anchor", "middle")
-  .text("Minutes");
-
-// Add the Y Axis with a title
-xgSvg.append("g")
-  .call(d3.axisLeft(yScale))
-  .append("text")
-  .attr("class", "axis-title")
-  .attr("transform", "rotate(-90)")
-  .attr("y", -50)
-  .attr("x", -xgHeight / 2)
-  .attr("dy", "1em")
-  .style("text-anchor", "middle")
-  .text("Cumulative xG");
-
-// Add chart title
-xgSvg.append("text")
-  .attr("x", (xgWidth / 2))
-  .attr("y", -10)
-  .attr("text-anchor", "middle")
-  .style("font-size", "20px")
-  .style("text-decoration", "underline")
-  .text("Argentina 1 - 2 Saudi Arabia");
-
-// If you want the x-axis to go until the maximum minute where a shot was recorded,
-// find the max minute from your data and set the domain of xScale accordingly.
-// Example:
-const maxMinute = d3.max(data, d => d.Minute);
-xScale.domain([0, maxMinute]);
-// Then redraw the x-axis:
-xgSvg.select(".x-axis").call(d3.axisBottom(xScale).ticks(maxMinute / 5)); // Adjust tick count as needed
+    .call(d3.axisLeft(yScale))
+    .append("text")
+    .attr("class", "axis-label")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -50)
+    .attr("x", -xgHeight / 2)
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Cumulative xG");
 });
