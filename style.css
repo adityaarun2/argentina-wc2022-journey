@@ -76,3 +76,24 @@ body {
     opacity: 0;
     transition: opacity 0.3s;
 }
+
+#xg-chart {
+    margin: 20px auto;
+    max-width: 960px; /* Set a max-width for the chart if desired */
+}
+
+.axis-label {
+    fill: #333;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.goal-dot {
+    stroke: #333;
+    stroke-width: 1px;
+}
+
+.legend {
+    font-size: 10px;
+    font-family: 'Roboto', sans-serif;
+}
