@@ -97,3 +97,12 @@ body {
     font-size: 10px;
     font-family: 'Roboto', sans-serif;
 }
+
+#narrative-text {
+    text-align: center; /* Center the text within the div */
+    max-width: 960px; /* Assuming you want to match the width of the xG chart */
+    margin: 20px auto; /* Centers the div in the middle of the page with some margin on the top and bottom */
+    font-family: 'Open Sans', sans-serif; /* Use the same font family for consistency */
+    padding: 0 10px; /* Optional padding for better readability */
+    font-size: 1em; /* Adjust font size as needed */
+}
