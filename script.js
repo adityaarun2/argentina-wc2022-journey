@@ -64,13 +64,13 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
       });
 });
 
+// Bar chart code already provided above...
+
 // xG chart code
-// Set the dimensions and margins of the graph for the xG chart
-const xgMargin = { top: 50, right: 30, bottom: 60, left: 60 },
+const xgMargin = { top: 20, right: 30, bottom: 60, left: 60 },
       xgWidth = 960 - xgMargin.left - xgMargin.right,
       xgHeight = 500 - xgMargin.top - xgMargin.bottom;
 
-// Append the SVG object to the div called 'xg-chart'
 const xgSvg = d3.select("#xg-chart")
   .append("svg")
     .attr("width", xgWidth + xgMargin.left + xgMargin.right)
@@ -78,60 +78,44 @@ const xgSvg = d3.select("#xg-chart")
   .append("g")
     .attr("transform", `translate(${xgMargin.left},${xgMargin.top})`);
 
-// Initialize a tooltip for the xG chart
 const xgTooltip = d3.select("body").append("div")
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-// Read the data from the CSV file
 d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
-  // Convert strings to numbers and initialize starting point for both teams
-  let argentinaData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
-  let saudiData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
-
-  // Process data for cumulative xG values for both teams
   data.forEach(function(d) {
     d.xG = +d.xG;
     d.Minute = +d.Minute;
+  });
+
+  let argentinaData = [{ Minute: 0, cumulativeXG: 0, Squad: "Argentina" }];
+  let saudiData = [{ Minute: 0, cumulativeXG: 0, Squad: "Saudi Arabia" }];
+
+  data.sort((a, b) => a.Minute - b.Minute).forEach(function(d) {
     if(d.Squad === 'Argentina') {
-      argentinaData.push({ ...d, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
+      argentinaData.push({ Minute: d.Minute, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG, Squad: "Argentina" });
     } else if(d.Squad === 'Saudi Arabia') {
-      saudiData.push({ ...d, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
+      saudiData.push({ Minute: d.Minute, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG, Squad: "Saudi Arabia" });
     }
   });
 
-  // Sort data by minute to ensure correct line plotting
-  argentinaData.sort((a, b) => a.Minute - b.Minute);
-  saudiData.sort((a, b) => a.Minute - b.Minute);
+  // Extend the last value to minute 90 for both teams
+  argentinaData.push({ Minute: 90, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG, Squad: "Argentina" });
+  saudiData.push({ Minute: 90, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG, Squad: "Saudi Arabia" });
 
-  // Define the scales for the xG chart
   const xScale = d3.scaleLinear()
-    .domain([0, 90]) // extending to a typical football match duration
+    .domain([0, 90])
     .range([0, xgWidth]);
 
   const yScale = d3.scaleLinear()
-    .domain([0, Math.max(
-      d3.max(argentinaData, d => d.cumulativeXG), 
-      d3.max(saudiData, d => d.cumulativeXG)
-    )])
+    .domain([0, Math.max(argentinaData[argentinaData.length - 1].cumulativeXG, saudiData[saudiData.length - 1].cumulativeXG)])
     .range([xgHeight, 0]);
 
-  // Define the line generator for the xG chart
   const line = d3.line()
     .x(d => xScale(d.Minute))
     .y(d => yScale(d.cumulativeXG))
     .curve(d3.curveStepAfter);
 
-  // Add chart title
-  xgSvg.append("text")
-    .attr("x", xgWidth / 2)
-    .attr("y", 0 - (xgMargin.top / 2))
-    .attr("text-anchor", "middle")
-    .style("font-size", "20px")
-    .style("text-decoration", "underline")
-    .text("Argentina 1 - 2 Saudi Arabia");
-
-  // Draw the lines for each team
   xgSvg.append("path")
     .datum(argentinaData)
     .attr("fill", "none")
@@ -146,15 +130,14 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .attr("stroke-width", 2)
     .attr("d", line);
 
-  // Add circles for goals and tooltips on hover
   xgSvg.selectAll(".goal-dot")
     .data(data.filter(d => d.Outcome === "Goal"))
     .enter().append("circle")
       .attr("class", "goal-dot")
       .attr("cx", d => xScale(d.Minute))
       .attr("cy", d => yScale(d.Squad === 'Argentina' ? 
-                              argentinaData.find(dd => dd.Minute === d.Minute).cumulativeXG : 
-                              saudiData.find(dd => dd.Minute === d.Minute).cumulativeXG))
+                               argentinaData.find(dd => dd.Minute === d.Minute).cumulativeXG : 
+                               saudiData.find(dd => dd.Minute === d.Minute).cumulativeXG))
       .attr("r", 5)
       .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
       .on("mouseover", (event, d) => {
@@ -165,16 +148,15 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY - 28) + "px");
       })
-      .on("mouseout", () => {
+      .on("mouseout", (d) => {
         xgTooltip.transition()
           .duration(500)
           .style("opacity", 0);
       });
 
-  // Add the X Axis with a title
   xgSvg.append("g")
     .attr("transform", `translate(0,${xgHeight})`)
-    .call(d3.axisBottom(xScale).ticks(18))
+    .call(d3.axisBottom(xScale))
     .append("text")
     .attr("class", "axis-label")
     .attr("y", 40)
@@ -182,15 +164,22 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .style("text-anchor", "middle")
     .text("Minutes");
 
-  // Add the Y Axis with a title
   xgSvg.append("g")
     .call(d3.axisLeft(yScale))
     .append("text")
     .attr("class", "axis-label")
     .attr("transform", "rotate(-90)")
     .attr("y", -50)
-    .attr("x", -xgHeight / 2)
     .attr("dy", "1em")
+    .attr("x", -xgHeight / 2)
     .style("text-anchor", "middle")
     .text("Cumulative xG");
+
+  xgSvg.append("text")
+    .attr("x", (xgWidth / 2))             
+    .attr("y", 0 - (xgMargin.top / 2))
+    .attr("text-anchor", "middle")  
+    .style("font-size", "20px") 
+    .style("text-decoration", "underline")  
+    .text("Argentina 1 - 2 Saudi Arabia");
 });
