@@ -86,27 +86,25 @@ const xgTooltip = d3.select("body").append("div")
 // Read the data from the CSV file
 d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
   // Convert strings to numbers and initialize starting point for both teams
-  let argentinaData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
-  let saudiData = [{ Minute: 0, cumulativeXG: 0, Player: "", Outcome: "" }];
+  let argentinaData = [{ Minute: 0, cumulativeXG: 0 }];
+  let saudiData = [{ Minute: 0, cumulativeXG: 0 }];
 
   // Process data for cumulative xG values for both teams
   data.forEach(function(d) {
     d.xG = +d.xG;
     d.Minute = +d.Minute;
     if(d.Squad === 'Argentina') {
-      argentinaData.push({ ...d, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
+      argentinaData.push({ Minute: d.Minute, cumulativeXG: argentinaData[argentinaData.length - 1].cumulativeXG + d.xG });
     } else if(d.Squad === 'Saudi Arabia') {
-      saudiData.push({ ...d, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
+      saudiData.push({ Minute: d.Minute, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG + d.xG });
     }
   });
 
-  // Extend the Saudi Arabia data to the end of the match if their last event is before the 90th minute
-  if (saudiData[saudiData.length - 1].Minute < 90) {
-    saudiData.push({ Minute: 90, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG, Squad: "Saudi Arabia" });
-  }
+  // Extend the Saudi Arabia data to the end of the chart, assuming 90 is the max
+  saudiData.push({ Minute: 90, cumulativeXG: saudiData[saudiData.length - 1].cumulativeXG });
 
   // Determine the maximum minute from the data
-  const maxMinute = d3.max(data, d => d.Minute);
+  const maxMinute = 90; // Assuming 90 is the max for a regular match
 
   // Define the scales for the xG chart
   const xScale = d3.scaleLinear()
@@ -173,37 +171,13 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
     .attr("stroke-width", 2)
     .attr("d", line);
 
-  // Add a legend to the chart
-  const legend = xgSvg.append("g")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
-    .attr("text-anchor", "end")
-    .selectAll("g")
-    .data(["Argentina", "Saudi Arabia"])
-    .enter().append("g")
-    .attr("transform", (d, i) => `translate(-50,${i * 20})`);
-
-  legend.append("rect")
-    .attr("x", xgWidth - 19)
-    .attr("width", 19)
-    .attr("height", 19)
-    .attr("fill", d => d === "Argentina" ? "blue" : "green");
-
-  legend.append("text")
-    .attr("x", xgWidth - 24)
-    .attr("y", 9.5)
-    .attr("dy", "0.32em")
-    .text(d => d);
-
   // Add circles for goals and tooltips on hover
   xgSvg.selectAll(".goal-dot")
     .data(data.filter(d => d.Outcome === "Goal"))
     .enter().append("circle")
       .attr("class", "goal-dot")
       .attr("cx", d => xScale(d.Minute))
-      .attr("cy", d => yScale(d.Squad === 'Argentina' ? 
-                              argentinaData.find(dd => dd.Minute === d.Minute).cumulativeXG : 
-                              saudiData.find(dd => dd.Minute === d.Minute).cumulativeXG))
+      .attr("cy", d => yScale(d.cumulativeXG))
       .attr("r", 5)
       .attr("fill", d => d.Squad === "Argentina" ? "blue" : "green")
       .on("mouseover", (event, d) => {
@@ -219,4 +193,27 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
           .duration(500)
           .style("opacity", 0);
       });
+
+  // Add a legend to the top left corner of the chart
+  const legend = xgSvg.append("g")
+    .attr("class", "legend")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .attr("text-anchor", "start")
+    .selectAll("g")
+    .data(["Argentina", "Saudi Arabia"])
+    .enter().append("g")
+    .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+  legend.append("rect")
+    .attr("x", 0)
+    .attr("y", 10)
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("fill", d => d === "Argentina" ? "blue" : "green");
+
+  legend.append("text")
+    .attr("x", 20)
+    .attr("y", 20)
+    .text(d => d);
 });
