@@ -59,6 +59,12 @@ body {
   max-width: 800px;
 }
 
+#match-narrative {
+  margin: 1px;
+  text-align: left;
+  max-width: 800px;
+}
+
 
 #bar-chart {
     margin: 20px;
