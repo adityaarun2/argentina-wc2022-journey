@@ -131,6 +131,7 @@ body {
     fill: #fff;
     cursor: pointer;
 }
+
 .tooltip {
     position: absolute;
     text-align: center;
@@ -141,31 +142,4 @@ body {
     border-radius: 3px;
     pointer-events: none;
     z-index: 10;
-}
-
-/* Additional CSS to center all content */
-html, body, #content {
-    height: 100%;
-}
-
-#content {
-    /* Use the full viewport height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* This will vertically center your content */
-    align-items: center; /* This will horizontally center your content */
-}
-
-/* Additional CSS to correctly position the tooltip */
-.tooltip {
-    position: fixed; /* Changed from absolute to fixed to position relative to the viewport */
-    text-align: center;
-    padding: 6px;
-    font: 12px sans-serif;
-    background: white;
-    border: 1px solid #333;
-    border-radius: 3px;
-    pointer-events: none; /* Prevent the tooltip from interfering with mouse events */
-    z-index: 10;
-    transform: translateX(-50%); /* Centers the tooltip above the circle */
 }
