@@ -400,4 +400,46 @@ d3.select("#gameSlider").on("input", function() {
   updateGameAnalysis(+this.value);  // Updates the text based on the slider
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  fetch('elimination-bracket.json')
+      .then(response => response.json())
+      .then(data => buildBracket(data["Knockout stage"]))
+      .catch(error => console.error('Error fetching elimination data:', error));
+});
+
+function buildBracket(data) {
+  const container = document.getElementById('bracket-container');
+  ['Round of 16', 'Quarter-finals', 'Semi-finals', 'Third-place match', 'Final'].forEach(round => {
+      const roundDiv = document.createElement('div');
+      roundDiv.className = 'round ' + round.toLowerCase().replace(/ /g, '-');
+      const label = document.createElement('div');
+      label.className = 'round-label';
+      label.textContent = round;
+      roundDiv.appendChild(label);
+
+      const matches = data[round].matches || [data[round].match]; // handle single match rounds
+      matches.forEach(match => {
+          const matchDiv = document.createElement('div');
+          matchDiv.className = 'match';
+          const team1 = document.createElement('div');
+          team1.className = 'team';
+          team1.textContent = `${match.team1} ${match.score.split('–')[0]}`;
+          const team2 = document.createElement('div');
+          team2.className = 'team';
+          team2.textContent = `${match.team2} ${match.score.split('–')[1]}`;
+          // Highlight winning team
+          if (match.winners === match.team1) {
+              team1.classList.add('winner');
+          } else if (match.winners === match.team2) {
+              team2.classList.add('winner');
+          }
+          matchDiv.appendChild(team1);
+          matchDiv.appendChild(team2);
+          roundDiv.appendChild(matchDiv);
+      });
+
+      container.appendChild(roundDiv);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', drawSoccerPitch);
