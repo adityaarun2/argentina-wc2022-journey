@@ -142,3 +142,27 @@ body {
     pointer-events: none;
     z-index: 10;
 }
+
+/* Full-width pitch container */
+#soccer-pitch svg {
+    width: 100%;
+    height: auto; /* Adjust height to maintain aspect ratio */
+  }
+  
+  /* Text styling inside player markers */
+  .player-number {
+    font-family: 'Roboto', sans-serif;
+    fill: #000;
+    font-size: 12px;
+    text-anchor: middle;
+    pointer-events: none; /* Prevents the text from interfering with mouse events */
+  }
+  
+  /* Team lineup titles */
+  .team-title {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+  }

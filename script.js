@@ -334,16 +334,16 @@ function updateXGChart(gameIndex) {
 
 // Function to draw the soccer pitch under 'Finals'
 function drawSoccerPitch() {
-  // Width and height of the pitch in your visualization
-  const pitchWidth = 600;
-  const pitchHeight = 300;
+  // Use the full width of the container
+  const pitchContainer = document.getElementById('soccer-pitch');
+  const pitchWidth = pitchContainer.offsetWidth;
+  const pitchHeight = pitchWidth / 2; // Adjust based on desired aspect ratio
 
   // Append an SVG element to the div with the id 'soccer-pitch'
   const svg = d3.select('#soccer-pitch').append('svg')
-      .attr('width', pitchWidth)
-      .attr('height', pitchHeight)
+      .attr('viewBox', `0 0 ${pitchWidth} ${pitchHeight}`)
       .attr('class', 'pitch')
-      .style('background-color', 'green'); // Optional: set pitch background color
+      .style('background-color', 'green');
 
   // Load the player data from the JSON file
   d3.json('final-lineup.json').then(function(data) {
@@ -351,30 +351,24 @@ function drawSoccerPitch() {
       const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
       const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
 
-      // Draw players on the pitch
-      svg.selectAll('.player')
-          .data(data.teams.flatMap(team => team.players)) // Flatten the player arrays
-          .enter().append('circle')
-          .attr('class', 'player-marker')
-          .attr('cx', d => xScale(d.x))
-          .attr('cy', d => yScale(d.y))
-          .attr('r', 5) // Radius of player markers
-          .attr('fill', 'white')
-          .on('mouseover', function(event, d) {
-              // Show tooltip with player name on hover
-              const tooltip = d3.select('body').append('div')
-                  .attr('class', 'tooltip')
-                  .style('opacity', 0);
+      // Group for each player to hold circle and text
+      const playerGroup = svg.selectAll('.player-group')
+          .data(data.teams.flatMap(team => team.players))
+          .enter().append('g')
+          .attr('class', 'player-group')
+          .attr('transform', d => `translate(${xScale(d.x)}, ${yScale(d.y)})`);
 
-              tooltip.transition().duration(200).style('opacity', 0.9);
-              tooltip.html(d.name)
-                  .style('left', (event.pageX) + 'px')
-                  .style('top', (event.pageY - 28) + 'px');
-          })
-          .on('mouseout', function() {
-              // Remove tooltip when not hovering
-              d3.select('.tooltip').remove();
-          });
+      // Draw players on the pitch as circles
+      playerGroup.append('circle')
+          .attr('class', 'player-marker')
+          .attr('r', pitchWidth / 50) // Radius relative to pitch width
+          .attr('fill', 'white');
+
+      // Add player numbers on the circles
+      playerGroup.append('text')
+          .attr('class', 'player-number')
+          .attr('dy', '.35em') // Center vertically
+          .text(d => d.number);
   });
 }
 
@@ -400,4 +394,18 @@ d3.select("#gameSlider").on("input", function() {
   updateGameAnalysis(+this.value);  // Updates the text based on the slider
 });
 
-document.addEventListener('DOMContentLoaded', drawSoccerPitch);
+document.addEventListener('DOMContentLoaded', function() {
+  drawSoccerPitch();
+
+  // Add titles for the lineups
+  const lineupContainer = document.getElementById('content');
+  const argentinaTitle = document.createElement('div');
+  argentinaTitle.className = 'team-title';
+  argentinaTitle.innerText = 'Argentina (4-3-3)';
+  lineupContainer.insertBefore(argentinaTitle, lineupContainer.firstChild);
+
+  const franceTitle = document.createElement('div');
+  franceTitle.className = 'team-title';
+  franceTitle.innerText = 'France (4-2-3-1)';
+  lineupContainer.insertBefore(franceTitle, lineupContainer.children[1]);
+});
