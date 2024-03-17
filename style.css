@@ -47,10 +47,10 @@ body {
     margin: 20px;
 }
 
-
 #intro-text {
     margin: 1px;
     text-align: left;
+    max-width: 1000px;
 }
 
 #context-text {
@@ -60,20 +60,20 @@ body {
 }
 
 #match-narrative {
-  margin: 20px;
+  margin: 10px;
   text-align: left;
   max-width: 1000px;
 }
 
 #gameAnalysis {
-    margin: 20px;
+    margin: 10px;
     text-align: left;
-    max-width: 800px;
+    max-width: 1000px;
 }
 
 
 #bar-chart {
-    margin: 20px;
+    margin: 10px;
 }
 
 .tooltip {
@@ -91,7 +91,7 @@ body {
 
 #slider-container {
     width: 200px;
-    margin: 20px auto;
+    margin: 10px auto;
 }
 
 .slider {
@@ -126,13 +126,14 @@ body {
   
   .match {
     justify-content: space-between;
-    margin: 20px;
-    width: 250px; /* Adjust width to ensure content fits on one line */
+    margin: 5px;
+    width: 175px; /* Adjust width to ensure content fits on one line */
+    text-align:center;
   }
   
 
   .team {
-    padding: 7px;
+    padding: 5px;
     margin: 5px;
     background-color: #f4f4f4;
     border: 1px solid #ddd;
