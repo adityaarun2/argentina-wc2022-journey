@@ -14,8 +14,18 @@ const svg = d3.select("#bar-chart")
 
 // Create a tooltip for the bar chart
 const barTooltip = d3.select("body").append("div")
-  .attr("class", "tooltip")
-  .style("opacity", 0);
+    .attr("class", "barTooltip") // Note the unique class name
+    .style("opacity", 0)
+    .style("position", "absolute")
+    .style("text-align", "center")
+    .style("width", "120px")
+    .style("height", "28px")
+    .style("padding", "2px")
+    .style("font", "12px sans-serif")
+    .style("background", "lightsteelblue")
+    .style("border", "0px")
+    .style("border-radius", "8px")
+    .style("pointer-events", "none"); // Ensure the tooltip does not interfere with other mouse events
 
 // Parse the data for the bar chart
 d3.json('total_world_cup_goals_by_country.json').then(function(data) {
@@ -52,7 +62,7 @@ d3.json('total_world_cup_goals_by_country.json').then(function(data) {
       .on("mouseover", (event, d) => {
         barTooltip.transition()
           .duration(200)
-          .style("opacity", .9);
+          .style("opacity", 1);
         barTooltip.html(`${d.country}<br/>Goals: ${d.total_goals}`)
           .style("left", `${event.pageX}px`)
           .style("top", `${event.pageY - 28}px`);
@@ -332,51 +342,92 @@ function updateXGChart(gameIndex) {
     });
 }
 
-// Function to draw the soccer pitch under 'Finals'
 function drawSoccerPitch() {
-  // Width and height of the pitch in your visualization
-  const pitchWidth = 600;
-  const pitchHeight = 300;
+    const pitchWidth = 600;
+    const pitchHeight = 300;
+  
+    const svg = d3.select('#soccer-pitch').append('svg')
+        .attr('width', pitchWidth)
+        .attr('height', pitchHeight)
+        .attr('class', 'pitch')
+        .style('background-color', 'green'); // Optional: set pitch background color
+  
+    d3.json('final-lineup.json').then(function(data) {
+        const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
+        const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
+  
+        svg.selectAll('.player')
+            .data(data.teams.flatMap(team => team.players.map(player => ({ ...player, teamColor: (team.country === "Argentina" ? "#ADD8E6" : "#00008B") })))) // Assign blue color to Argentina and yellow to France
+            .enter().append('circle')
+            .attr('class', 'player-marker')
+            .attr('cx', d => xScale(d.x))
+            .attr('cy', d => yScale(d.y))
+            .attr('r', 10) // Radius of player markers
+            .attr('fill', d => d.teamColor) // Use the team color for the fill
+            .on('mouseover', function(event, d) {
+                // Remove any existing tooltips before creating a new one
+                d3.selectAll('.tooltip').remove(); // This line ensures any lingering tooltips are removed
+            
+                const tooltip = d3.select('body').append('div')
+                    .attr('class', 'tooltip')
+                    .style('opacity', 0);
+            
+                tooltip.transition().duration(200).style('opacity', 1);
+                tooltip.html(`#${d.number} ${d.name} - ${d.position}`)
+                    .style('left', (event.pageX + 10) + 'px') // Adjusted for better positioning
+                    .style('top', (event.pageY - 28) + 'px');
+            })
+            .on('mouseout', function() {
+                // Select and remove the specific tooltip
+                d3.selectAll('.tooltip').transition().duration(500).style('opacity', 0).remove();
+            });        
+        })
+        // Create the SVG container
 
-  // Append an SVG element to the div with the id 'soccer-pitch'
-  const svg = d3.select('#soccer-pitch').append('svg')
-      .attr('width', pitchWidth)
-      .attr('height', pitchHeight)
-      .attr('class', 'pitch')
-      .style('background-color', 'green'); // Optional: set pitch background color
+// Halfway line
+svg.append('line')
+    .attr('x1', pitchWidth / 2)
+    .attr('y1', 0)
+    .attr('x2', pitchWidth / 2)
+    .attr('y2', pitchHeight)
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
 
-  // Load the player data from the JSON file
-  d3.json('final-lineup.json').then(function(data) {
-      // Scale to place players according to the pitch size
-      const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
-      const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
+// Center circle
+svg.append('circle')
+    .attr('cx', pitchWidth / 2)
+    .attr('cy', pitchHeight / 2)
+    .attr('r', pitchHeight / 6)  // Radius; typical soccer pitch circle radius
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
 
-      // Draw players on the pitch
-      svg.selectAll('.player')
-          .data(data.teams.flatMap(team => team.players)) // Flatten the player arrays
-          .enter().append('circle')
-          .attr('class', 'player-marker')
-          .attr('cx', d => xScale(d.x))
-          .attr('cy', d => yScale(d.y))
-          .attr('r', 5) // Radius of player markers
-          .attr('fill', 'white')
-          .on('mouseover', function(event, d) {
-              // Show tooltip with player name on hover
-              const tooltip = d3.select('body').append('div')
-                  .attr('class', 'tooltip')
-                  .style('opacity', 0);
+// Penalty areas: assuming these are 16 meters from each goal line, adapt size as needed
+const penaltyAreaWidth = pitchWidth * 0.18;  // Adjust based on actual field proportions
+const penaltyAreaHeight = pitchHeight * 0.4; // Adjust based on actual field proportions
 
-              tooltip.transition().duration(200).style('opacity', 0.9);
-              tooltip.html(d.name)
-                  .style('left', (event.pageX) + 'px')
-                  .style('top', (event.pageY - 28) + 'px');
-          })
-          .on('mouseout', function() {
-              // Remove tooltip when not hovering
-              d3.select('.tooltip').remove();
-          });
-  });
-}
+// Left penalty area
+svg.append('rect')
+    .attr('x', 0)
+    .attr('y', (pitchHeight - penaltyAreaHeight) / 2)
+    .attr('width', penaltyAreaWidth)
+    .attr('height', penaltyAreaHeight)
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
+
+// Right penalty area
+svg.append('rect')
+    .attr('x', pitchWidth - penaltyAreaWidth)
+    .attr('y', (pitchHeight - penaltyAreaHeight) / 2)
+    .attr('width', penaltyAreaWidth)
+    .attr('height', penaltyAreaHeight)
+    .attr('fill', 'none')
+    .attr('stroke', 'white')
+    .attr('stroke-width', 2);
+
+    }
+  
 
 // Array containing the analysis text for each game
 const gameAnalysisText = [
