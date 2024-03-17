@@ -98,7 +98,7 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-#narrative-text {
+#match-narrative {
     text-align: center; /* Center the text within the div */
     max-width: 960px; /* Assuming you want to match the width of the xG chart */
     margin: 20px auto; /* Centers the div in the middle of the page with some margin on the top and bottom */
