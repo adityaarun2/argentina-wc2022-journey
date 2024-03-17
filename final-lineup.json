@@ -1,0 +1,39 @@
+{
+  "teams": [
+    {
+      "country": "Argentina",
+      "formation": "4-3-3",
+      "players": [
+        {"number": 23, "name": "Emiliano Martinez", "position": "GK", "x": 10, "y": 50},
+        {"number": 26, "name": "Nahuel Molina", "position": "DF", "x": 25, "y": 10},
+        {"number": 13, "name": "Cristian Romero", "position": "DF", "x": 25, "y": 35},
+        {"number": 19, "name": "Nicolás Otamendi", "position": "DF", "x": 25, "y": 65},
+        {"number": 3, "name": "Nicolás Tagliafico", "position": "DF", "x": 25, "y": 90},
+        {"number": 7, "name": "Rodrigo De Paul", "position": "MF", "x": 50, "y": 20},
+        {"number": 24, "name": "Enzo Fernandez", "position": "MF", "x": 50, "y": 50},
+        {"number": 20, "name": "Alexis Mac Allister", "position": "MF", "x": 50, "y": 80},
+        {"number": 11, "name": "Angel Di Maria", "position": "FW", "x": 75, "y": 10},
+        {"number": 9, "name": "Julián Álvarez", "position": "FW", "x": 75, "y": 50},
+        {"number": 10, "name": "Lionel Messi", "position": "FW", "x": 75, "y": 90}
+      ]
+    },
+    {
+      "country": "France",
+      "formation": "4-2-3-1",
+      "players": [
+        {"number": 1, "name": "Hugo Lloris", "position": "GK", "x": 90, "y": 50},
+        {"number": 22, "name": "Theo Hernandez", "position": "DF", "x": 75, "y": 10},
+        {"number": 3, "name": "Dayot Upamecano", "position": "DF", "x": 75, "y": 35},
+        {"number": 4, "name": "Raphael Varane", "position": "DF", "x": 75, "y": 65},
+        {"number": 5, "name": "Jules Kounde", "position": "DF", "x": 75, "y": 90},
+        {"number": 14, "name": "Adrien Rabiot", "position": "MF", "x": 60, "y": 30},
+        {"number": 8, "name": "Aurélien Tchouaméni", "position": "MF", "x": 60, "y": 70},
+        {"number": 11, "name": "Ousmane Dembélé", "position": "FW", "x": 50, "y": 20},
+        {"number": 7, "name": "Antoine Griezmann", "position": "FW", "x": 50, "y": 50},
+        {"number": 10, "name": "Kylian Mbappé", "position": "FW", "x": 50, "y": 80},
+        {"number": 9, "name": "Olivier Giroud", "position": "FW", "x": 85, "y": 50}
+      ]
+    }
+  ]
+}
+
