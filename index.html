@@ -1,72 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Argentina's Majestic World Cup 2022</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://d3js.org/d3.v6.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Argentina's Majestic World Cup 2022</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
 <body>
-<div id="image-container">
-<img src="penalties.jpeg" alt="Winners" style="width:100%; height:auto;">
-</div>
+    <div id="image-container">
+        <img src="penalties.jpeg" alt="Winners" style="width:100%; height:auto;">
+    </div>
 
+    <div id="main-header">
+        <h1>Argentina's Majestic World Cup 2022 Run in Qatar</h1>
+    </div>
 
-<div id="main-header">
-<h1>Argentina's Majestic World Cup 2022 Run in Qatar</h1>
-</div>
+    <div id="content">
+        <div id="intro-text">
+            <h1>Prelude</h1>
+            <p>
+                Heading into the 2022 World Cup, Argentina carried with them a rich tapestry of football history, colored by triumphs, near-misses, and the indelible legacy of past legends. With two World Cup titles to their name, won in 1978 and 1986, Argentina has long been a beacon of football excellence on the global stage. The shadow of Diego Maradona, one of football's greatest icons, has loomed large over the team, especially his legendary performance in Mexico's 1986 World Cup, which has been a source of inspiration and a high benchmark for subsequent Argentine squads.
+            </p>
+        </div>
 
+        <div id="bar-chart"></div> <!-- Bar chart division -->
 
-<div id="content">
-<div id="intro-text">
-<h1>Prelude</h1>
-<p>
-Heading into the 2022 World Cup, Argentina carried with them a rich tapestry of football history, colored by triumphs, near-misses, and the indelible legacy of past legends. With two World Cup titles to their name, won in 1978 and 1986, Argentina has long been a beacon of football excellence on the global stage. The shadow of Diego Maradona, one of football's greatest icons, has loomed large over the team, especially his legendary performance in Mexico's 1986 World Cup, which has been a source of inspiration and a high benchmark for subsequent Argentine squads.
-</p>
-</div>
+        <div id="context-text">
+            <p>
+                Argentina has been known for its attacking football, with a total goal tally in World Cup competitions that reflects their aggressive style of play. Before the 2022 World Cup, the team had amassed a substantial number of goals across all their World Cup appearances. This visualization highlights Argentina's impressive history in World Cup football, showcasing the total goals scored by the top 10 countries in the tournament's history. Notably, Argentina stands out with an impressive tally of 152 goals, underscoring their status as one of the most prolific and enduring teams on the global stage.
+            </p>
+        </div>    
+        
+        <!-- New division for the match narrative -->
+        <div id="match-narrative">
+            <h1>Group Stage</h1>
+            <p>
+                Argentina was placed in Group C of the 2022 FIFA World Cup, accompanied by Mexico, Poland, and Saudi Arabia. Before the matches kicked off, Argentina was tipped by many to lead the group with relative ease. Mexico and Poland were seen as challengers who were expected to battle for the second qualifying spot.
+            </p>
+        </div>  
 
+        <div id="xg-chart"></div>
 
-<div id="bar-chart"></div> <!-- Bar chart division -->
+        <div id="slider-container">
+            <input type="range" min="0" max="2" value="0" class="slider" id="gameSlider">
+            <span id="gameLabel">Argentina vs Saudi Arabia</span>
+        </div>
 
+        <div id="gameAnalysis" class="game-analysis">
+            <!-- Text for each game will be displayed here -->
+        </div>
+        
+        <div id="match-narrative">
+            <h1>Elimination Stage</h1>
+        </div>
 
-<div id="context-text">
-<p>
-Argentina has been known for its attacking football, with a total goal tally in World Cup competitions that reflects their aggressive style of play. Before the 2022 World Cup, the team had amassed a substantial number of goals across all their World Cup appearances. This visualization highlights Argentina's impressive history in World Cup football, showcasing the total goals scored by the top 10 countries in the tournament's history. Notably, Argentina stands out with an impressive tally of 152 goals, underscoring their status as one of the most prolific and enduring teams on the global stage.
-</p>
-</div>
-<!-- New division for the match narrative -->
-<div id="match-narrative">
-<h1>Group Stage</h1>
-<p>
-Argentina was placed in Group C of the 2022 FIFA World Cup, accompanied by Mexico, Poland, and Saudi Arabia. Before the matches kicked off, Argentina was tipped by many to lead the group with relative ease. Mexico and Poland were seen as challengers who were expected to battle for the second qualifying spot.
-</p>
-</div>
+        <div id="match-narrative">
+            <h1>Finals</h1>
+            <!-- Container for the soccer pitch visualization -->
+            <div id="soccer-pitch">
+                <p>The 2022 World Cup final between Argentina and France unfurled as a spectacle steeped in drama and high-octane skill, captivating a global audience. Argentina, rejuvenated under the talismanic Lionel Messi, sought to etch a new chapter in their storied legacy. France, led by the prodigious Kylian Mbappé, aimed to defend their title and secure a consecutive triumph. The match was an intense chess match brought to life on the pitch, with Argentina dictating the early play, manifesting in a lead that hinted at a smooth sail toward victory. However, the narrative took an electrifying turn as France, with indomitable spirit, staged a formidable comeback, challenging Argentina's ascendancy. The game’s momentum oscillated wildly, mirrored by an xG chart that bore witness to the breathtaking swings in fortune. It was a final that encapsulated the essence of the beautiful game—a blend of strategy, heart, and the unpredictable magic of football. In the end, Argentina's blend of gritty determination and celestial talent prevailed, crowning them as champions, a fitting culmination that saw Messi's quest for glory finally fulfilled on the world stage.</p>
+            </div>
+        </div>
 
-
-<div id="xg-chart"></div>
-
-
-<div id="slider-container">
-<input type="range" min="0" max="2" value="0" class="slider" id="gameSlider">
-<span id="gameLabel">Argentina vs Saudi Arabia</span>
-</div>
-
-
-<div id="gameAnalysis" class="game-analysis">
-<!-- Text for each game will be displayed here -->
-</div>
-<div id="match-narrative">
-<h1>Elimination Stage</h1>
-</div>
-
-
-<div id="match-narrative">
-<h1>Finals</h1>
-<!-- Container for the soccer pitch visualization -->
-<div id="soccer-pitch"></div>
-</div>
-
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
