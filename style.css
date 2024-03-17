@@ -129,6 +129,7 @@ body {
     margin: 5px;
     width: 175px; /* Adjust width to ensure content fits on one line */
     text-align:center;
+    padding: 10px; /* More internal space */
   }
   
 
