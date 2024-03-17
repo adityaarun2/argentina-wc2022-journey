@@ -350,7 +350,7 @@ function drawSoccerPitch() {
         .attr('width', pitchWidth)
         .attr('height', pitchHeight)
         .attr('class', 'pitch')
-        .style('background-color', 'green'); // Optional: set pitch background color
+        .style('background-color', '#006600'); // Optional: set pitch background color
   
     d3.json('final-lineup.json').then(function(data) {
         const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
@@ -376,6 +376,7 @@ function drawSoccerPitch() {
                 tooltip.html(`#${d.number} ${d.name} - ${d.position}`)
                     .style('left', (event.pageX + 10) + 'px') // Adjusted for better positioning
                     .style('top', (event.pageY - 28) + 'px');
+                    .style('background', 'lightgrey')
             })
             .on('mouseout', function() {
                 // Select and remove the specific tooltip
