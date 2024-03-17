@@ -400,6 +400,8 @@ d3.select("#gameSlider").on("input", function() {
   updateGameAnalysis(+this.value);  // Updates the text based on the slider
 });
 
+document.addEventListener('DOMContentLoaded', drawSoccerPitch);
+
 document.addEventListener('DOMContentLoaded', function() {
   fetch('elimination-bracket.json')
       .then(response => response.json())
@@ -441,5 +443,3 @@ function buildBracket(data) {
       container.appendChild(roundDiv);
   });
 }
-
-document.addEventListener('DOMContentLoaded', drawSoccerPitch);
