@@ -367,9 +367,9 @@ function drawSoccerPitch() {
                   .style('opacity', 0);
 
               tooltip.transition().duration(200).style('opacity', 0.9);
-              tooltip.html(d.name)
-                  .style('left', (event.pageX) + 'px')
-                  .style('top', (event.pageY - 28) + 'px');
+              tooltip.html(d.name + ' #' + d.number) // This will show both the name and number
+    .style('left', (event.pageX) + 'px')
+    .style('top', (event.pageY - 28) + 'px');
           })
           .on('mouseout', function() {
               // Remove tooltip when not hovering
