@@ -332,50 +332,64 @@ function updateXGChart(gameIndex) {
     });
 }
 
-// Function to draw the soccer pitch under 'Finals'
+document.addEventListener('DOMContentLoaded', function() {
+  drawSoccerPitch();
+
+  // Add headers for team formations
+  const argentinaFormationHeader = document.createElement('div');
+  argentinaFormationHeader.className = 'formation-header';
+  argentinaFormationHeader.innerText = 'Argentina (4-3-3)';
+  document.getElementById('content').appendChild(argentinaFormationHeader);
+
+  const franceFormationHeader = document.createElement('div');
+  franceFormationHeader.className = 'formation-header';
+  franceFormationHeader.innerText = 'France (4-2-3-1)';
+  document.getElementById('content').appendChild(franceFormationHeader);
+});
+
+// Function to draw the soccer pitch
 function drawSoccerPitch() {
-  // Width and height of the pitch in your visualization
-  const pitchWidth = 600;
-  const pitchHeight = 300;
+  // Dimensions based on the aspect ratio of the pitch
+  const pitchWidth = document.getElementById('content').offsetWidth;
+  const pitchHeight = pitchWidth / 2;
 
-  // Append an SVG element to the div with the id 'soccer-pitch'
-  const svg = d3.select('#soccer-pitch').append('svg')
-      .attr('width', pitchWidth)
-      .attr('height', pitchHeight)
-      .attr('class', 'pitch')
-      .style('background-color', 'green'); // Optional: set pitch background color
+  const svg = d3.select('#content').append('svg')
+    .attr('class', 'pitch')
+    .attr('width', pitchWidth)
+    .attr('height', pitchHeight)
+    .style('background-color', 'green');
 
-  // Load the player data from the JSON file
+  // Load player data and create pitch elements
   d3.json('final-lineup.json').then(function(data) {
-      // Scale to place players according to the pitch size
-      const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
-      const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
+    // Scales for player positions
+    const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
+    const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
 
-      // Draw players on the pitch
-      svg.selectAll('.player')
-          .data(data.teams.flatMap(team => team.players)) // Flatten the player arrays
-          .enter().append('circle')
-          .attr('class', 'player-marker')
-          .attr('cx', d => xScale(d.x))
-          .attr('cy', d => yScale(d.y))
-          .attr('r', 5) // Radius of player markers
-          .attr('fill', 'white')
-          .on('mouseover', function(event, d) {
-              // Show tooltip with player name on hover
-              const tooltip = d3.select('body').append('div')
-                  .attr('class', 'tooltip')
-                  .style('opacity', 0);
-
-              tooltip.transition().duration(200).style('opacity', 0.9);
-              tooltip.html(d.name)
-                  .style('left', (event.pageX) + 'px')
-                  .style('top', (event.pageY - 28) + 'px');
-          })
-          .on('mouseout', function() {
-              // Remove tooltip when not hovering
-              d3.select('.tooltip').remove();
-          });
+    // Player markers
+    svg.selectAll('.player-marker')
+      .data(data.teams.flatMap(team => team.players))
+      .enter().append('circle')
+        .attr('class', 'player-marker')
+        .attr('cx', d => xScale(d.x))
+        .attr('cy', d => yScale(d.y))
+        .attr('r', pitchWidth * 0.02) // Marker radius relative to pitch width
+        .on('mouseover', showTooltip)
+        .on('mouseout', hideTooltip);
   });
+
+  // Tooltip show function
+  function showTooltip(event, d) {
+    d3.select('.tooltip')
+      .style('visibility', 'visible')
+      .html(`Name: ${d.name}<br>Number: ${d.number}`)
+      .style('left', `${event.pageX}px`)
+      .style('top', `${event.pageY}px`);
+  }
+
+  // Tooltip hide function
+  function hideTooltip() {
+    d3.select('.tooltip').style('visibility', 'hidden');
+  }
 }
 
 // Array containing the analysis text for each game
