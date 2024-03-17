@@ -127,9 +127,9 @@ body {
   .match {
     justify-content: space-between;
     margin: 5px;
-    width: 175px; /* Adjust width to ensure content fits on one line */
+    width: auto; /* Adjust width to ensure content fits on one line */
     text-align:center;
-    padding: 10px; /* More internal space */
+    padding: 0 10px; /* More internal space */
   }
   
 
@@ -166,5 +166,4 @@ body {
 /* Style for the soccer pitch */
 .pitch {
     margin:20px;
-    background: #060;
 }

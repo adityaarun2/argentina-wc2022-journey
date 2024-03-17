@@ -345,45 +345,48 @@ function updateXGChart(gameIndex) {
 function drawSoccerPitch() {
     const pitchWidth = 600;
     const pitchHeight = 300;
-  
+
+    // Enhanced SVG setup with clearer background color and improved border
     const svg = d3.select('#soccer-pitch').append('svg')
         .attr('width', pitchWidth)
         .attr('height', pitchHeight)
         .attr('class', 'pitch')
-        .style('background-color', '#006600'); // Optional: set pitch background color
-  
+        .style('background-color', '#006600') // Darker green for better contrast
+        .style('border', '1px solid #fff'); // White border for pitch
+
+    // Load data and create the visualization
     d3.json('final-lineup.json').then(function(data) {
         const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
         const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
-  
+
+        // Player markers improved for visibility
         svg.selectAll('.player')
-            .data(data.teams.flatMap(team => team.players.map(player => ({ ...player, teamColor: (team.country === "Argentina" ? "#ADD8E6" : "#00008B") })))) // Assign blue color to Argentina and yellow to France
+        .data(data.teams.flatMap(team => team.players.map(player => ({ ...player, teamColor: (team.country === "Argentina" ? "#ADD8E6" : "#00008B") })))) // Assign blue color to Argentina and yellow to France
             .enter().append('circle')
             .attr('class', 'player-marker')
             .attr('cx', d => xScale(d.x))
             .attr('cy', d => yScale(d.y))
-            .attr('r', 10) // Radius of player markers
-            .attr('fill', d => d.teamColor) // Use the team color for the fill
+            .attr('r', 10) // Slightly larger markers
+            .attr('fill', d => d.teamColor)
             .on('mouseover', function(event, d) {
-                // Remove any existing tooltips before creating a new one
-                d3.selectAll('.tooltip').remove(); // This line ensures any lingering tooltips are removed
-            
+                d3.selectAll('.tooltip').remove();
                 const tooltip = d3.select('body').append('div')
                     .attr('class', 'tooltip')
                     .style('opacity', 0);
-            
-                tooltip.transition().duration(200).style('opacity', 1);
+
+                tooltip.transition().duration(200).style('opacity', .9);
                 tooltip.html(`#${d.number} ${d.name} - ${d.position}`)
-                    .style('left', (event.pageX + 10) + 'px') // Adjusted for better positioning
-                    .style('top', (event.pageY - 28) + 'px');
-                    .style('background', 'lightgrey')
+                    .style('left', (event.pageX + 15) + 'px')
+                    .style('top', (event.pageY - 15) + 'px')
+                    .style('background', 'lightgrey') // Improved tooltip background
+                    .style('padding', '5px')
+                    .style('border-radius', '8px');
             })
             .on('mouseout', function() {
-                // Select and remove the specific tooltip
                 d3.selectAll('.tooltip').transition().duration(500).style('opacity', 0).remove();
-            });        
+            });
         })
-        // Create the SVG container
+
 
 // Halfway line
 svg.append('line')
@@ -443,6 +446,7 @@ function updateGameAnalysis(gameIndex) {
 }
 
 // Set up the initial game analysis text (for the first game)
+updateXGChart(0);
 updateGameAnalysis(0);  // Sets the text for the first game initially
 
 // Attach event listener to the slider
@@ -462,36 +466,52 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function buildBracket(data) {
-  const container = document.getElementById('bracket-container');
-  ['Round of 16', 'Quarter-finals', 'Semi-finals', 'Third-place match', 'Final'].forEach(round => {
-      const roundDiv = document.createElement('div');
-      roundDiv.className = 'round ' + round.toLowerCase().replace(/ /g, '-');
-      const label = document.createElement('div');
-      label.className = 'round-label';
-      label.textContent = round;
-      roundDiv.appendChild(label);
-
-      const matches = data[round].matches || [data[round].match]; // handle single match rounds
-      matches.forEach(match => {
-          const matchDiv = document.createElement('div');
-          matchDiv.className = 'match';
-          const team1 = document.createElement('div');
-          team1.className = 'team';
-          team1.textContent = `${match.team1} ${match.score.split('–')[0]}`;
-          const team2 = document.createElement('div');
-          team2.className = 'team';
-          team2.textContent = `${match.team2} ${match.score.split('–')[1]}`;
-          // Highlight winning team
-          if (match.winners === match.team1) {
-              team1.classList.add('winner');
-          } else if (match.winners === match.team2) {
-              team2.classList.add('winner');
-          }
-          matchDiv.appendChild(team1);
-          matchDiv.appendChild(team2);
-          roundDiv.appendChild(matchDiv);
-      });
-
-      container.appendChild(roundDiv);
-  });
+    const container = document.getElementById('bracket-container');
+    
+    // Loop through each round in the tournament
+    ['Round of 16', 'Quarter-finals', 'Semi-finals', 'Third-place match', 'Final'].forEach(round => {
+        const roundDiv = document.createElement('div');
+        // Assign class names based on the round to support custom styling
+        roundDiv.className = 'round ' + round.toLowerCase().replace(/ /g, '-');
+        
+        // Create and append the round label
+        const label = document.createElement('div');
+        label.className = 'round-label';
+        label.textContent = round; // Set the label text to the name of the round
+        roundDiv.appendChild(label);
+        
+        // Handle both single and multiple matches per round
+        const matches = data[round].matches || [data[round].match]; // handle single match rounds
+        
+        // Loop through each match in the current round
+        matches.forEach(match => {
+            const matchDiv = document.createElement('div');
+            matchDiv.className = 'match'; // Class for styling each match container
+            
+            // Create and style team1 element
+            const team1 = document.createElement('div');
+            team1.className = 'team'; // Class for styling team name
+            team1.textContent = `${match.team1} ${match.score.split('–')[0]}`; // Set text to team name and score
+            
+            // Create and style team2 element
+            const team2 = document.createElement('div');
+            team2.className = 'team'; // Class for styling team name
+            team2.textContent = `${match.team2} ${match.score.split('–')[1]}`; // Set text to team name and score
+            
+            // Highlight the winning team by adding a 'winner' class
+            if (match.winners === match.team1) {
+                team1.classList.add('winner');
+            } else if (match.winners === match.team2) {
+                team2.classList.add('winner');
+            }
+            
+            // Append the teams to the match div, and the match div to the round div
+            matchDiv.appendChild(team1);
+            matchDiv.appendChild(team2);
+            roundDiv.appendChild(matchDiv);
+        });
+        
+        // Append the completed round div to the main container
+        container.appendChild(roundDiv);
+    });
 }
