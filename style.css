@@ -44,7 +44,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px;
 }
 
 #intro-text {
@@ -57,6 +57,18 @@ body {
   margin: 1px;
   text-align: left;
   max-width: 800px;
+}
+
+#match-narrative {
+  margin: 2px;
+  text-align: left;
+  max-width: 800px;
+}
+
+#gameAnalysis {
+    margin: 2px;
+    text-align: left;
+    max-width: 800px;
 }
 
 
@@ -77,9 +89,13 @@ body {
     transition: opacity 0.3s;
 }
 
-#xg-chart {
+#slider-container {
+    width: 200px;
     margin: 20px auto;
-    max-width: 960px; /* Set a max-width for the chart if desired */
+}
+
+.slider {
+    width: 100%;
 }
 
 .axis-label {
@@ -98,11 +114,32 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-#narrative-text {
-    text-align: center; /* Center the text within the div */
-    max-width: 960px; /* Assuming you want to match the width of the xG chart */
-    margin: 20px auto; /* Centers the div in the middle of the page with some margin on the top and bottom */
-    font-family: 'Open Sans', sans-serif; /* Use the same font family for consistency */
-    padding: 0 10px; /* Optional padding for better readability */
-    font-size: 1em; /* Adjust font size as needed */
+#pitch-container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 50px; /* You can adjust the padding to fit the content */
+}
+
+/* Style for the soccer pitch */
+.pitch {
+    border: 1px solid #fff;
+    background: #060;
+}
+
+/* Style for player markers */
+.player-marker {
+    fill: #fff;
+    cursor: pointer;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 6px;
+    font: 12px sans-serif;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 10;
 }
