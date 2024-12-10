@@ -28,7 +28,7 @@ const barTooltip = d3.select("body").append("div")
     .style("pointer-events", "none"); // Ensure the tooltip does not interfere with other mouse events
 
 // Parse the data for the bar chart
-d3.json('total_world_cup_goals_by_country.json').then(function(data) {
+d3.json('../data/metadata/wc_goals_by_country.json').then(function(data) {
   // Sort the data by total goals and take the top 10
   const top10Data = data.sort((a, b) => d3.descending(a.total_goals, b.total_goals)).slice(0, 10);
 
@@ -94,7 +94,7 @@ const xgTooltip = d3.select("body").append("div")
   .style("opacity", 0);
 
 // Read the data from the CSV file
-d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
+d3.csv("../data/shot-data/argentina-saudi.csv").then(function(data) {
 
   // Calculate cumulative xG for both teams
   let argentinaData = [{ Minute: 0, cumulativeXG: 0 }];
@@ -209,7 +209,7 @@ d3.csv("Argentina Shot Data - Saudi Arabia.csv").then(function(data) {
 function updateXGChart(gameIndex) {
   // Array of game names and corresponding CSV file paths
   const games = ["Argentina 1 - 2 Saudi Arabia", "Argentina 2-0 Mexico", "Poland 0-2 Argentina"];
-  const files = ["Argentina Shot Data - Saudi Arabia.csv", "Argentina Shot Data - Mexico.csv", "Argentina Shot Data - Poland.csv"];
+  const files = ["../data/shot-data/argentina-saudi.csv", "../data/shot-data/argentina-mexico.csv", "../data/shot-data/argentina-poland.csv"];
   const opponents = ["Saudi Arabia", "Mexico", "Poland"]; // Opponent names for the legend
 
   // Update game label based on selected game
@@ -355,7 +355,7 @@ function drawSoccerPitch() {
         .style('border', '1px solid #fff'); // White border for pitch
 
     // Load data and create the visualization
-    d3.json('final-lineup.json').then(function(data) {
+    d3.json('../data/metadata/final-lineup.json').then(function(data) {
         const xScale = d3.scaleLinear().domain([0, 100]).range([0, pitchWidth]);
         const yScale = d3.scaleLinear().domain([0, 100]).range([0, pitchHeight]);
 
@@ -459,7 +459,7 @@ d3.select("#gameSlider").on("input", function() {
 document.addEventListener('DOMContentLoaded', drawSoccerPitch);
 
 document.addEventListener('DOMContentLoaded', function() {
-  fetch('elimination-bracket.json')
+  fetch('../data/metadata/elimination-bracket.json')
       .then(response => response.json())
       .then(data => buildBracket(data["Knockout stage"]))
       .catch(error => console.error('Error fetching elimination data:', error));
