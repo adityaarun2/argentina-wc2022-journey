@@ -1,0 +1,1 @@
+Run the download_flags.py script to download all team flags as .png files into this directory.
