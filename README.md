@@ -1,3 +1,13 @@
 # Argentina's 2022 World Cup Journey
 
-This is an interactive analytics dashboard using D3.js to visualize Argentina's 2022 World Cup winning journey, including dynamic bar and xG charts, narrative match analysis, a visual pitch for the final's starting XI, and an elimination bracket, all enhanced with tooltips and user-driven updates.
+This project is an **interactive visualization dashboard** that explores Argentina’s historic 2022 FIFA World Cup winning campaign. The dashboard uses **D3.js** to present match-by-match analytics and storytelling through dynamic, user-driven visuals.
+
+
+Live Demo: http://adityaarun2.github.io/argentina-wc2022-journey/
+
+## Tech Stack
+
+- D3.js
+- HTML
+- CSS
+- JavaScript
