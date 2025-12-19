@@ -13,7 +13,7 @@ const svg = d3.select("#bar-chart")
   .attr("transform", `translate(${margin.left},${margin.top})`);
 
 const barTooltip = d3.select("body").append("div")
-  .attr("class", "barTooltip")
+  .attr("class", "tooltip")
   .style("opacity", 0)
   .style("position", "absolute")
   .style("text-align", "center")
