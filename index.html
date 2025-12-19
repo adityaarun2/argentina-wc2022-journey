@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Argentina's Majestic World Cup 2022</title>
+    <link rel="stylesheet" href="src/style.css">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+    <div id="image-container">
+        <img src="images/penalties.jpeg" alt="Winners" style="width:100%; height:auto;">
+    </div>
+
+    <div id="main-header">
+        <h1>Argentina's Majestic World Cup 2022 Run in Qatar</h1>
+    </div>
+
+    <div id="content">
+        <div id="intro-text">
+            <h1>Prelude</h1>
+            <p>
+                Heading into the 2022 World Cup, Argentina carried with them a rich tapestry of football history, colored by triumphs, near-misses, and the indelible legacy of past legends. With two World Cup titles to their name, won in 1978 and 1986, Argentina has long been a beacon of football excellence on the global stage. The shadow of Diego Maradona, one of football's greatest icons, has loomed large over the team, especially his legendary performance in Mexico's 1986 World Cup, which has been a source of inspiration and a high benchmark for subsequent Argentine squads.
+            </p>
+        </div>
+
+        <div id="bar-chart"></div> <!-- Bar chart division -->
+
+        <div id="context-text">
+            <p>
+                Argentina has been known for its attacking football, with a total goal tally in World Cup competitions that reflects their aggressive style of play. Before the 2022 World Cup, the team had amassed a substantial number of goals across all their World Cup appearances. This visualization highlights Argentina's impressive history in World Cup football, showcasing the total goals scored by the top 10 countries in the tournament's history. Notably, Argentina stands out with an impressive tally of 152 goals, underscoring their status as one of the most prolific and enduring teams on the global stage.
+            </p>
+        </div>    
+        
+        <!-- New division for the match narrative -->
+        <div id="match-narrative">
+            <h1>Group Stage</h1>
+            <p>
+                Argentina was placed in Group C of the 2022 FIFA World Cup, accompanied by Mexico, Poland, and Saudi Arabia. Before the matches kicked off, Argentina was tipped by many to lead the group with relative ease. Mexico and Poland were seen as challengers who were expected to battle for the second qualifying spot.
+            </p>
+        </div>  
+
+        <div id="xg-chart"></div>
+
+        <div id="slider-container">
+            <input type="range" min="0" max="2" value="0" class="slider" id="gameSlider">
+            <span id="gameLabel">Argentina vs Saudi Arabia</span>
+        </div>
+
+        <div id="gameAnalysis" class="game-analysis">
+            <!-- Text for each game will be displayed here -->
+        </div>
+        
+        <div id="match-narrative">
+            <h1>Elimination Stage</h1>
+            <div id="bracket-container"></div>
+            <p>
+                Argentina's journey through the knockout stage was nothing short of exhilarating either. The Round of 16 saw them facing Australia, leading to a 2-1 victory that set the tone for their knockout phase campaign.
+            </p>
+            <p>
+                The quarter-finals presented a formidable challenge against the Netherlands. In a nail-biting encounter that extended into penalties, Argentina displayed nerves of steel to emerge victorious, highlighting their team's resilience and unity.
+            </p>
+            <p>
+                The semi-finals pitted Argentina against Croatia, a rematch of sorts from the previous World Cup. However, this time, Argentina dominated the match, winning 3-0, showcasing their tactical superiority and footballing prowess, sending them into the finals with a strong message.
+            </p>
+        </div>
+
+        <div id="match-narrative">
+            <h1>Finals</h1>
+            <p>
+                The 2022 World Cup final showcased an intense battle between Argentina, led by Lionel Messi, and France, spearheaded by Kylian Mbappé. Argentina started strong, taking an early lead. However, France made a remarkable comeback, adding high tension to the match. Despite France's efforts, Argentina's determination and skill ultimately led them to victory through penalties, marking a significant moment in their football legacy and fulfilling Messi's quest for World Cup glory.
+            </p>
+        </div>
+
+        <div id="soccer-pitch"></div>
+        <b>Argentina vs France: World Cup Final Starting XI</b>
+
+
+    <script src="src/script.js"></script>
+</body>
+</html>
